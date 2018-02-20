@@ -1,4 +1,7 @@
 #include "MyMesh.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 void MyMesh::Init(void)
 {
 	m_bBinded = false;
@@ -276,8 +279,30 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Init();
 
 	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3> tempVert;
+	for (float i = 0; i <= a_nSubdivisions; ++i)
+	{
+		//do math for the points in a circle
+		double angle = (2 * M_PI) * i / a_nSubdivisions;
+		double s = sin(angle);
+		double c = cos(angle);
+
+		//calculates points in a circle and pushes back to tempVert
+		tempVert.push_back(glm::vec3((a_fRadius * c), 0.0f, (a_fRadius * s)));
+
+	}
+	//adds tris to create sides of cone
+	for (float i = 0; i < a_nSubdivisions; ++i)
+	{
+		//second variable in AddTri is a vec3 that adds point for all of the other points to connect to.
+		AddTri(tempVert[i], glm::vec3(0.0f, a_fHeight, 0.0f), tempVert[i + 1]);
+	}
+
+	//creates bottom
+	for (float i = 0; i < a_nSubdivisions; ++i)
+	{
+		AddTri(tempVert[i], tempVert[i + 1], glm::vec3(0, 0, 0));
+	}
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -299,9 +324,34 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+	std::vector<vector3> tempVert;
+	std::vector<vector3> tempVert2;
+	for (float i = 0; i <= a_nSubdivisions; ++i)
+	{
+		//do math for the points in a circle
+		double angle = (2.0 * M_PI) * i / a_nSubdivisions;
+		double s = sin(angle);
+		double c = cos(angle);
+
+		tempVert.push_back(glm::vec3((a_fRadius * c), 0.0f, (a_fRadius * s)));
+		tempVert2.push_back(glm::vec3((a_fRadius * c), a_fHeight, (a_fRadius * s)));
+	}
+
+	//creates bottom
+	for (float i = 0; i < a_nSubdivisions; ++i)
+	{
+		AddTri(tempVert[i], tempVert[i + 1], glm::vec3(0, 0, 0));
+		AddTri(tempVert[i], tempVert2[i], tempVert2[i + 1]);
+		AddTri(tempVert2[i + 1], tempVert[i + 1], tempVert[i]);
+	}
+
+	//creates top
+	for (float i = 0; i < a_nSubdivisions; ++i)
+	{
+		AddTri(tempVert2[i], glm::vec3(0, a_fHeight, 0), tempVert2[i + 1]);
+	}
+
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -329,9 +379,37 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3> tempVertOuterTop;
+	std::vector<vector3> tempVertOuterBottom;
+	std::vector<vector3> tempVertInnerTop;
+	std::vector<vector3> tempVertInnerBottom;
+	for (float i = 0; i <= a_nSubdivisions; ++i)
+	{
+		//do math for the points in a circle
+		float angle = (2 * M_PI) * i / a_nSubdivisions;
+		float s = sin(angle);
+		float c = cos(angle);
+
+		tempVertOuterBottom.push_back(glm::vec3((a_fOuterRadius * c), 0.0f, (a_fOuterRadius * s)));
+		tempVertOuterTop.push_back(glm::vec3((a_fOuterRadius * c), a_fHeight, (a_fOuterRadius * s)));
+		tempVertInnerBottom.push_back(glm::vec3((a_fInnerRadius * c), 0.0f, (a_fInnerRadius * s)));
+		tempVertInnerTop.push_back(glm::vec3((a_fInnerRadius * c), a_fHeight, (a_fInnerRadius * s)));
+	}
+
+	//creates bottom and inside quads
+	for (float i = 0; i < a_nSubdivisions; ++i)
+	{
+		AddQuad(tempVertOuterBottom[i], tempVertOuterBottom[i + 1], tempVertInnerBottom[i], tempVertInnerBottom[i + 1]);
+		AddQuad(tempVertInnerBottom[i], tempVertInnerBottom[i + 1], tempVertInnerTop[i], tempVertInnerTop[i + 1]); //inside quads
+	}
+
+	//creates top and creates outside quads
+	for (float i = 0; i < a_nSubdivisions; ++i)
+	{
+		AddQuad(tempVertOuterTop[i + 1], tempVertOuterTop[i], tempVertInnerTop[i + 1], tempVertInnerTop[i]);
+		AddQuad(tempVertOuterBottom[i + 1], tempVertOuterBottom[i], tempVertOuterTop[i + 1], tempVertOuterTop[i]); //outside quads
+	}
+
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -386,9 +464,33 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3> tempVert;
+	for (int i = 0; i <= a_nSubdivisions; ++i)
+	{
+		for (int j = 0; j <= a_nSubdivisions; j++)
+		{
+			float const y = sin(-M_PI_2 + M_PI * i / a_nSubdivisions);
+			float const x = cos(2 * M_PI * j / a_nSubdivisions) * sin(M_PI * i / a_nSubdivisions);
+			float const z = sin(2 * M_PI * j / a_nSubdivisions) * sin(M_PI * i / a_nSubdivisions);
+			//finds all points for a sphere
+			tempVert.push_back(glm::vec3(x * a_fRadius, y * a_fRadius, z * a_fRadius));
+
+		}
+	}
+	for (int i = 0; i <= a_nSubdivisions; i++)
+	{
+		tempVert.push_back(glm::vec3(0.0f, -a_fRadius, 0.0f));
+	}
+
+	for (int i = 0; i <= a_nSubdivisions; i++)
+	{
+		for (int j = 0; j <= a_nSubdivisions; j++)
+		{
+			AddQuad(tempVert[(i + 1) * a_nSubdivisions + j], tempVert[(i + 1) * a_nSubdivisions + (j + 1)], tempVert[i * a_nSubdivisions + j], tempVert[i * a_nSubdivisions + (j + 1)]);
+		}
+
+	}
+
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
