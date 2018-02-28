@@ -44,7 +44,8 @@ private:
 	CameraManager* m_pCameraMngr = nullptr; //Singleton for the camera manager
 	ControllerInput* m_pController[8]; //Controller
 	uint m_uActCont = 0; //Active Controller of the Application
-
+	std::vector<std::vector<vector3>> sidesList;
+	std::vector<int> currentPosList;
 public:
 #pragma region Constructor / Run / Destructor
 	/*
