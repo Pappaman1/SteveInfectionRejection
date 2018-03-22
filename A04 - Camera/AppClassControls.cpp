@@ -1,5 +1,10 @@
 #include "AppClass.h"
 using namespace Simplex;
+
+float fAngleX = 0.0f;
+	float fAngleY = 0.0f;
+	float fDeltaMouse = 0.0f;
+
 //Mouse
 void Application::ProcessMouseMovement(sf::Event a_event)
 {
@@ -344,9 +349,7 @@ void Application::CameraRotation(float a_fSpeed)
 	MouseY = pt.y;
 
 	//Calculate the difference in view with the angle
-	float fAngleX = 0.0f;
-	float fAngleY = 0.0f;
-	float fDeltaMouse = 0.0f;
+	
 	if (MouseX < CenterX)
 	{
 		fDeltaMouse = static_cast<float>(CenterX - MouseX);
@@ -369,6 +372,9 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 	//Change the Yaw and the Pitch of the camera
+	m_pCamera->ChangeYawAndPitch((fAngleY * 3.0f), (fAngleX * 3.0f));
+	//m_pCamera->ChangeYaw(fAngleY * 3.0f);
+	//m_pCamera->ChangePitch(-fAngleX * 3.0f);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 }
 //Keyboard
@@ -385,6 +391,24 @@ void Application::ProcessKeyboard(void)
 
 	if (fMultiplier)
 		fSpeed *= 5.0f;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		m_pCamera->MoveForward(fSpeed);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		m_pCamera->MoveForward(-fSpeed);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		m_pCamera->MoveSideways(-fSpeed);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		m_pCamera->MoveSideways(fSpeed);
+
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		m_pCamera->MoveVertical(-fSpeed);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+		m_pCamera->MoveVertical(fSpeed);*/
 #pragma endregion
 }
 //Joystick
@@ -409,6 +433,10 @@ void Application::ProcessJoystick(void)
 		fHorizontalSpeed *= 3.0f;
 		fVerticalSpeed *= 3.0f;
 	}
+
+	/*m_pCameraMngr->MoveForward(fForwardSpeed);
+	m_pCameraMngr->MoveSideways(fHorizontalSpeed);
+	m_pCameraMngr->MoveVertical(fVerticalSpeed);*/
 #pragma endregion
 #pragma region Camera Orientation
 	//Change the Yaw and the Pitch of the camera
