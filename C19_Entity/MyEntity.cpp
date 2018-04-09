@@ -1,6 +1,7 @@
 #include "MyEntity.h"
 using namespace Simplex;
 std::map<String, MyEntity*> MyEntity::m_IDMap;
+std::map<String, MyEntity*> MyEntity::m_modelDictionary;
 //  Accessors
 matrix4 Simplex::MyEntity::GetModelMatrix(void){ return m_m4ToWorld; }
 void Simplex::MyEntity::SetModelMatrix(matrix4 a_m4ToWorld)

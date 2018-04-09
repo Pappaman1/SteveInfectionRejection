@@ -24,6 +24,7 @@ class MyEntity
 	MeshManager* m_pMeshMngr = nullptr; //For rendering shapes
 
 	static std::map<String, MyEntity*> m_IDMap; //a map of the unique ID's
+	static std::map<String, MyEntity*> MyEntity::m_modelDictionary; //dictionary of all entity
 
 public:
 	/*

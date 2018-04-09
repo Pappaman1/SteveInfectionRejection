@@ -63,7 +63,7 @@ void Application::Display(void)
 	ClearScreen();
 
 	//Add grid to the scene
-	//m_pMeshMngr->AddGridToRenderList();
+	m_pMeshMngr->AddGridToRenderList();
 
 	//Add skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
