@@ -438,22 +438,22 @@ void Application::ProcessKeyboard(void)
 	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
 	//	fspeed = 2.0f;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		m_pEntityMngr->ApplyForce(vector3(fspeed * fDelta, 0.0f, 0.0f), "Steve"); // move entity
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		m_pEntityMngr->ApplyForce(vector3(-fspeed * fDelta, 0.0f, 0.0f), "Steve"); // move entity
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		m_pEntityMngr->ApplyForce(vector3(0.0f, 0.0f, fspeed * fDelta), "Steve"); // move entity
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
 		m_pEntityMngr->ApplyForce(vector3(0.0f, 0.0f, -fspeed * fDelta), "Steve"); // move entity
 	}

@@ -15,7 +15,7 @@ void Application::InitVariables(void)
 	
 	for (int i = 0; i < 100; i++)
 	{
-		m_pEntityMngr->AddEntity("Minecraft\\Cube.obj", "Cube_" + std::to_string(i));
+		m_pEntityMngr->AddEntity("Minecraft\\Zombie.obj", "Zombie_" + std::to_string(i));
 		vector3 v3Position = vector3(glm::sphericalRand(12.0f));
 		v3Position.y = 0.0f;
 		matrix4 m4Position = glm::translate(v3Position);
