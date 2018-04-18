@@ -17,6 +17,8 @@ class MyEntityManager
 	uint m_uEntityCount = 0; //number of elements in the list
 	PEntity* m_mEntityArray = nullptr; //array of MyEntity pointers
 	static MyEntityManager* m_pInstance; // Singleton pointer
+
+	float deltaTime = 0;
 public:
 	/*
 	Usage: Gets the singleton pointer
@@ -73,7 +75,7 @@ public:
 	ARGUMENTS: ---
 	OUTPUT: ---
 	*/
-	void Update(void);
+	void Update(float deltaT);
 	/*
 	USAGE: Gets the model associated with this entity
 	ARGUMENTS: uint a_uIndex = -1 -> index in the list of entities; if less than 0 it will add it to the last in the list
@@ -311,6 +313,8 @@ public:
 	OUTPUT: ---
 	*/
 	void UsePhysicsSolver(bool a_bUse = true, uint a_uIndex = -1);
+
+	void SetDeltaTime(float time);
 private:
 	/*
 	Usage: constructor

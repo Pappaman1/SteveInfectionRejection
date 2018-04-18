@@ -291,12 +291,18 @@ void Simplex::MyEntity::ApplyForce(vector3 a_v3Force)
 {
 	m_pSolver->ApplyForce(a_v3Force);
 }
-void Simplex::MyEntity::Update(void)
+void Simplex::MyEntity::Update(float deltaTime)
 {
 	if (m_bUsePhysicsSolver)
 	{
-		m_pSolver->Update();
-		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
+
+		if (m_wander) {
+
+			m_pSolver->Seek(CalculateWander());
+		}
+		m_pSolver->Update(deltaTime);
+		SetModelMatrix(glm::translate(GetPosition()));
+
 	}
 }
 void Simplex::MyEntity::ResolveCollision(MyEntity* a_pOther)
@@ -309,4 +315,30 @@ void Simplex::MyEntity::ResolveCollision(MyEntity* a_pOther)
 void Simplex::MyEntity::UsePhysicsSolver(bool a_bUse)
 {
 	m_bUsePhysicsSolver = a_bUse;
+}
+
+vector3 Simplex::MyEntity::CalculateWander()
+{
+
+	vector3 v3distAhead = GetPosition() + (GetVelocity() * 2.0f );
+
+	// random number between 0 and 1
+	float f_angle = static_cast<float> (rand()) / static_cast<float>(RAND_MAX);
+
+	// multiply with PI
+	f_angle = f_angle * ( 2 * PI );
+	
+	float f_x = cos(f_angle) * 0.2f;
+	float f_z = sin(f_angle) * 0.2f;
+
+	vector3 v3NewPos = vector3(f_x, 0.0f, f_z);
+
+	vector3 totalPos = v3NewPos + v3distAhead;
+
+	return totalPos;
+}
+
+void Simplex::MyEntity::setWander(void)
+{
+	m_wander = true;
 }

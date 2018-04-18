@@ -85,11 +85,15 @@ vector3 RoundSmallVelocity(vector3 a_v3Velocity, float minVelocity = 0.01f)
 	}
 	return a_v3Velocity;
 }
-void MySolver::Update(void)
+void MySolver::Update(float deltaTime)
 {
-	ApplyForce(vector3(0.0f, -0.035f, 0.0f));
+	m_v3TotalForce += vector3(0.0f, -0.035f, 0.0f);
 
-	m_v3Velocity += m_v3Acceleration;
+	//m_v3TotalForce = glm::clamp(m_v3TotalForce, vector3(0.0f, 0.0f, 0.0f), vector3(8.0f, 0.0f, 8.0f));
+
+	ApplyForce(m_v3TotalForce);
+
+	m_v3Velocity += m_v3Acceleration * deltaTime;
 	
 	float fMaxVelocity = 5.0f;
 	m_v3Velocity = CalculateMaxVelocity(m_v3Velocity, fMaxVelocity);
@@ -97,7 +101,7 @@ void MySolver::Update(void)
 	ApplyFriction(0.1f);
 	m_v3Velocity = RoundSmallVelocity(m_v3Velocity, 0.028f);
 
-	m_v3Position += m_v3Velocity;
+	m_v3Position += m_v3Velocity * deltaTime;
 			
 	if (m_v3Position.y <= 0)
 	{
@@ -106,6 +110,8 @@ void MySolver::Update(void)
 	}
 
 	m_v3Acceleration = ZERO_V3;
+	m_v3TotalForce = ZERO_V3;
+
 }
 void MySolver::ResolveCollision(MySolver* a_pOther)
 {
@@ -127,4 +133,94 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 		ApplyForce(v3Direction);
 		a_pOther->ApplyForce(-v3Direction);
 	}
+}
+
+void Simplex::MySolver::Seek(vector3 targetPos)
+{
+	// Step 1: Calculate desired velocity
+	// Vector pointing from myself to my target
+	vector3 v3desiredVelocity = targetPos - m_v3Position;
+
+	// Step 2: Scale desired to max speed
+	glm::normalize(v3desiredVelocity);
+	v3desiredVelocity *= 5.0f;
+
+	// Step 3: Calculate the steering force for seeking
+	// Steering = desired - current
+	vector3 v3steeringForce = v3desiredVelocity - m_v3Velocity;
+
+	// Step 4: Return steering force -> apply to acceleration
+	m_v3TotalForce += v3steeringForce;
+}
+
+void Simplex::MySolver::Arrival(vector3 targetPos)
+{
+	// Step 1: Calculate desired velocity
+	// Vector pointing from myself to my target
+	vector3 v3desiredVelocity = targetPos - m_v3Position;
+
+	float mag = glm::length(v3desiredVelocity);
+	float fMaxSpeed;
+
+	// if within radius, reduce the speed depending on how close you are
+	if (mag <= 8.0f) {
+		fMaxSpeed = 5.0f / mag;
+
+		// stop at a certain point
+		if (mag <= 1.0f)
+		{
+			fMaxSpeed = 0.0f;
+		}
+	}
+
+	// Step 2: Scale desired to max speed
+	glm::normalize(v3desiredVelocity);
+	v3desiredVelocity *= fMaxSpeed;
+
+	// Step 3: Calculate the steering force for seeking
+	// Steering = desired - current
+	vector3 v3steeringForce = v3desiredVelocity - GetVelocity();
+
+	// Step 4: Return steering force -> apply to acceleration
+	m_v3TotalForce += v3steeringForce;
+}
+
+void Simplex::MySolver::Separate(vector3 targetPos)
+{
+	vector3 v3desiredVelocity = targetPos - GetPosition();
+	float mag = glm::length(v3desiredVelocity);
+
+	glm::normalize(v3desiredVelocity);
+	v3desiredVelocity *= 5.0f;
+
+	vector3 v3steeringForce = v3desiredVelocity - GetVelocity();
+
+	m_v3TotalForce += (v3steeringForce * (1 / mag));
+}
+
+vector3 Simplex::MySolver::Cohersion(vector3 direction)
+{
+	return vector3();
+}
+
+vector3 Simplex::MySolver::Alignment(vector3 direction)
+{
+	return vector3();
+}
+
+vector3 Simplex::MySolver::Flee(vector3 targetPos)
+{
+	vector3 v3desiredVelocity = targetPos - GetPosition();
+
+	glm::normalize(v3desiredVelocity);
+	v3desiredVelocity *= 5.0f;
+
+	vector3 v3steeringForce = v3desiredVelocity - GetVelocity();
+
+	return v3steeringForce;
+}
+
+void Simplex::MySolver::SetTotalForce(vector3 totalForce)
+{
+	m_v3TotalForce = totalForce;
 }

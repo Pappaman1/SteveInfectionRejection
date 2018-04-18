@@ -13,7 +13,7 @@ void Application::InitVariables(void)
 	m_pEntityMngr->AddEntity("Minecraft\\Zombie.obj", "Zombie");
 	m_pEntityMngr->UsePhysicsSolver();
 	
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_" + std::to_string(i));
 		vector3 v3Position = vector3(glm::sphericalRand(12.0f));
@@ -29,6 +29,10 @@ void Application::Update(void)
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
+	static float fTimer = 0;
+	static uint uClock = m_pSystem->GenClock();		//generate a new clock for that timer
+	fTimer = m_pSystem->GetDeltaTime(uClock);		//get the delta time for that timer
+
 	//Is the ArcBall active?
 	ArcBall();
 
@@ -36,7 +40,8 @@ void Application::Update(void)
 	CameraRotation();
 
 	//Update Entity Manager
-	m_pEntityMngr->Update();
+	//m_pEntityMngr->SetDeltaTime(fTimer);
+	m_pEntityMngr->Update(fTimer);
 
 	//Set the model matrix for the main object
 	//m_pEntityMngr->SetModelMatrix(m_m4Steve, "Steve");

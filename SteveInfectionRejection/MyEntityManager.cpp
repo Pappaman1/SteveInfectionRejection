@@ -165,7 +165,7 @@ Simplex::MyEntityManager::MyEntityManager(MyEntityManager const& a_pOther){ }
 Simplex::MyEntityManager& Simplex::MyEntityManager::operator=(MyEntityManager const& a_pOther) { return *this; }
 Simplex::MyEntityManager::~MyEntityManager(){Release();};
 // other methods
-void Simplex::MyEntityManager::Update(void)
+void Simplex::MyEntityManager::Update(float deltaT)
 {
 	//Clear all collisions
 	for (uint i = 0; i < m_uEntityCount; i++)
@@ -185,7 +185,7 @@ void Simplex::MyEntityManager::Update(void)
 			}
 		}
 		//Update each entity
-		m_mEntityArray[i]->Update();
+		m_mEntityArray[i]->Update(deltaT);
 	}
 }
 void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
@@ -195,6 +195,13 @@ void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 	//if I was able to generate it add it to the list
 	if (pTemp->IsInitialized())
 	{
+		String word = "Steve";
+		size_t test = a_sUniqueID.find(word);
+
+		if (test != std::string::npos) {
+			pTemp->setWander();
+			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
+		}
 		//create a new temp array with one extra entry
 		PEntity* tempArray = new PEntity[m_uEntityCount + 1];
 		//start from 0 to the current count
@@ -516,4 +523,9 @@ void Simplex::MyEntityManager::UsePhysicsSolver(bool a_bUse, uint a_uIndex)
 		a_uIndex = m_uEntityCount - 1;
 
 	return m_mEntityArray[a_uIndex]->UsePhysicsSolver(a_bUse);
+}
+
+void Simplex::MyEntityManager::SetDeltaTime(float time)
+{
+	deltaTime = time;
 }

@@ -16,6 +16,7 @@ class MyEntity
 	bool m_bInMemory = false; //loaded flag
 	bool m_bSetAxis = false; //render axis flag
 	String m_sUniqueID = ""; //Unique identifier name
+	bool m_wander = false;
 
 	uint m_nDimensionCount = 0; //tells how many dimensions this entity lives in
 	uint* m_DimensionArray = nullptr; //Dimensions on which this entity is located
@@ -260,13 +261,18 @@ public:
 	ARGUMENTS: ---
 	OUTPUT: ---
 	*/
-	void Update(void);
+	void Update(float deltaTime);
 	/*
 	USAGE: Resolves using physics solver or not in the update
 	ARGUMENTS: bool a_bUse = true -> using physics solver?
 	OUTPUT: ---
 	*/
 	void UsePhysicsSolver(bool a_bUse = true);
+
+	vector3 CalculateWander();
+
+	void setWander(void);
+
 
 private:
 	/*
