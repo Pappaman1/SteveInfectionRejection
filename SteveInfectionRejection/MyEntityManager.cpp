@@ -195,11 +195,27 @@ void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 	//if I was able to generate it add it to the list
 	if (pTemp->IsInitialized())
 	{
-		String word = "Steve";
-		size_t test = a_sUniqueID.find(word);
+		String word1 = "Steve";
+		String word2 = "Flee";
+		String word3 = "Angry";
+		size_t test1 = a_sUniqueID.find(word1);
+		size_t test2 = a_sUniqueID.find(word2);
+		size_t test3 = a_sUniqueID.find(word3);
 
-		if (test != std::string::npos) {
-			pTemp->setWander();
+		if (test1 != std::string::npos) {
+			pTemp->SetWander();
+			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
+		}
+
+		if (test2 != std::string::npos) {
+			pTemp->SetFlee();
+			pTemp->SetFleeSeek(GetEntity(0));
+			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
+		}
+
+		if (test3 != std::string::npos) {
+			pTemp->SetAngry();
+			pTemp->SetFleeSeek(GetEntity(0));
 			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
 		}
 		//create a new temp array with one extra entry

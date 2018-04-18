@@ -17,6 +17,10 @@ class MyEntity
 	bool m_bSetAxis = false; //render axis flag
 	String m_sUniqueID = ""; //Unique identifier name
 	bool m_wander = false;
+	bool m_flee = false;
+	bool m_angry = false;
+
+	MyEntity* fleeFrom = nullptr;
 
 	uint m_nDimensionCount = 0; //tells how many dimensions this entity lives in
 	uint* m_DimensionArray = nullptr; //Dimensions on which this entity is located
@@ -271,8 +275,14 @@ public:
 
 	vector3 CalculateWander();
 
-	void setWander(void);
+	void SetWander(void);
+	void SetFlee(void);
+	void SetAngry(void);
 
+	void SetDirection(vector3 a_v3Direction);
+	vector3 GetDirection(void);
+
+	void SetFleeSeek(MyEntity* enemy);
 
 private:
 	/*

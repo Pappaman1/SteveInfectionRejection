@@ -135,7 +135,7 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 	}
 }
 
-void Simplex::MySolver::Seek(vector3 targetPos)
+void Simplex::MySolver::Seek(vector3 targetPos, float a_fWeight)
 {
 	// Step 1: Calculate desired velocity
 	// Vector pointing from myself to my target
@@ -150,7 +150,19 @@ void Simplex::MySolver::Seek(vector3 targetPos)
 	vector3 v3steeringForce = v3desiredVelocity - m_v3Velocity;
 
 	// Step 4: Return steering force -> apply to acceleration
-	m_v3TotalForce += v3steeringForce;
+	m_v3TotalForce += v3steeringForce * a_fWeight;
+}
+
+void Simplex::MySolver::Flee(vector3 targetPos, float a_fWeight)
+{
+	vector3 v3desiredVelocity = m_v3Position - targetPos;
+
+	glm::normalize(v3desiredVelocity);
+	v3desiredVelocity *= 5.0f;
+
+	vector3 v3steeringForce = v3desiredVelocity - m_v3Velocity;
+
+	m_v3TotalForce += v3steeringForce * a_fWeight;
 }
 
 void Simplex::MySolver::Arrival(vector3 targetPos)
@@ -179,7 +191,7 @@ void Simplex::MySolver::Arrival(vector3 targetPos)
 
 	// Step 3: Calculate the steering force for seeking
 	// Steering = desired - current
-	vector3 v3steeringForce = v3desiredVelocity - GetVelocity();
+	vector3 v3steeringForce = v3desiredVelocity - m_v3Velocity;
 
 	// Step 4: Return steering force -> apply to acceleration
 	m_v3TotalForce += v3steeringForce;
@@ -208,19 +220,18 @@ vector3 Simplex::MySolver::Alignment(vector3 direction)
 	return vector3();
 }
 
-vector3 Simplex::MySolver::Flee(vector3 targetPos)
-{
-	vector3 v3desiredVelocity = targetPos - GetPosition();
-
-	glm::normalize(v3desiredVelocity);
-	v3desiredVelocity *= 5.0f;
-
-	vector3 v3steeringForce = v3desiredVelocity - GetVelocity();
-
-	return v3steeringForce;
-}
 
 void Simplex::MySolver::SetTotalForce(vector3 totalForce)
 {
 	m_v3TotalForce = totalForce;
+}
+
+void Simplex::MySolver::SetDirection(vector3 a_v3Direction)
+{
+	m_v3Direction = a_v3Direction;
+}
+
+vector3 Simplex::MySolver::GetDirection(void)
+{
+	return m_v3Direction;
 }

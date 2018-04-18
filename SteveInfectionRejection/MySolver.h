@@ -16,6 +16,7 @@ class MySolver
 	vector3 m_v3Position = ZERO_V3; //Position of the MySolver
 	vector3 m_v3Velocity = ZERO_V3; //Velocity of the MySolver
 	vector3 m_v3TotalForce = ZERO_V3;
+	vector3 m_v3Direction = ZERO_V3;
 
 	float m_fMass = 1.0f; //Mass of the solver
 public:
@@ -115,16 +116,19 @@ public:
 	void ResolveCollision(MySolver* a_pOther);
 
 
-	void Seek(vector3 targetPos);
+	void Seek(vector3 targetPos, float a_fWeight);
 	void Arrival(vector3 targetPos);
 	void Separate(vector3 targetPos);
 	vector3 Cohersion(vector3 direction);
 
 	vector3 Alignment(vector3 direction);
 
-	vector3 Flee(vector3 targetPos);
+	void Flee(vector3 targetPos, float a_fWeight);
 
 	void SetTotalForce(vector3 totalForce);
+
+	void SetDirection(vector3 a_v3Direction);
+	vector3 GetDirection(void);
 
 private:
 	/*

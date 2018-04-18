@@ -295,13 +295,44 @@ void Simplex::MyEntity::Update(float deltaTime)
 {
 	if (m_bUsePhysicsSolver)
 	{
+		bool test1 = m_wander;
+		bool test2 = m_flee;
+		bool test3 = m_angry;
+
 
 		if (m_wander) {
 
-			m_pSolver->Seek(CalculateWander());
+			m_pSolver->Seek(CalculateWander(), 1.0f);
+		}
+
+		if (m_flee) {
+			m_pSolver->Flee(fleeFrom->GetPosition(), 2.0f);
+		}
+
+		if (m_angry) {
+			m_pSolver->Seek(fleeFrom->GetPosition(), 3.0f);
 		}
 		m_pSolver->Update(deltaTime);
-		SetModelMatrix(glm::translate(GetPosition()));
+		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
+
+		//vector3 v3NewDir = glm::normalize(GetVelocity());
+		//vector3 v3CurrDir = GetDirection();
+		////vector3 m_v3NewTargetToLookAt = m_v3NewCameraPosition + m_v3NewLookDirection;
+		//
+		//float fAngleY = 0.0f;
+		//float fDeltaMouse = 0.0f;
+		//
+		//
+		//if (v3CurrDir.x < v3NewDir.x) {
+		//	fAngleY = static_cast<float>(v3NewDir.x - v3CurrDir.x);
+		//}
+		//else {
+		//	fAngleY = static_cast<float>(v3CurrDir.x - v3NewDir.x);
+		//}
+		//
+		//glm::quat m_qRotation = glm::angleAxis(fAngleY, -AXIS_Y);
+		//
+		//vector3 m_v3NewLookDirection = m_qRotation * -AXIS_Z;
 
 	}
 }
@@ -338,7 +369,34 @@ vector3 Simplex::MyEntity::CalculateWander()
 	return totalPos;
 }
 
-void Simplex::MyEntity::setWander(void)
+void Simplex::MyEntity::SetWander(void)
 {
 	m_wander = true;
+}
+
+void Simplex::MyEntity::SetFlee(void)
+{
+	m_flee = true;
+}
+
+void Simplex::MyEntity::SetAngry(void)
+{
+	m_angry = true;
+}
+
+void Simplex::MyEntity::SetDirection(vector3 a_v3Direction)
+{
+	if (m_pSolver) m_pSolver->SetDirection(a_v3Direction);
+}
+
+vector3 Simplex::MyEntity::GetDirection(void)
+{
+	if (m_pSolver != nullptr)
+		return m_pSolver->GetDirection();
+	return vector3();
+}
+
+void Simplex::MyEntity::SetFleeSeek(MyEntity* enemy)
+{
+	fleeFrom = enemy;
 }
