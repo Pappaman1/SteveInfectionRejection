@@ -45,6 +45,14 @@ protected:
 	uint m_uCollidingCount = 0; //size of the colliding set
 	PRigidBody* m_CollidingArray = nullptr; //array of rigid bodies this one is colliding with
 
+	float EPSILON = 0.00001f; // arbitrary floating point for eliminating false SAT testing 
+
+	struct OBB {
+		vector3 c; // center point
+		vector3 u[3]; // axes 
+		vector3 e; // half_width
+	};
+
 public:
 	/*
 	Usage: Constructor
