@@ -46,7 +46,7 @@ void Application::DrawGUI(void)
 			ImGui::Text("	 F3: Orthographic Y\n");
 			ImGui::Text("	 F4: Orthographic Z\n");
 			ImGui::Separator();
-			ImGui::Text("Arrows: Apply force to Steve\n");
+			ImGui::Text("Arrows: Movement\n");
 		}
 		ImGui::End();
 	}
