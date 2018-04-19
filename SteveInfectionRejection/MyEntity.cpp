@@ -309,12 +309,12 @@ void Simplex::MyEntity::Update(float deltaTime)
 			m_pSolver->Seek(fleeFrom->GetPosition(), 3.0f);
 		}
 
+		if (m_pSolver->OutOfBounds()) {
+			m_pSolver->Seek(vector3(0.0f, 0.0f, 0.0f), 6.0f);
+		}
 		
 		m_pSolver->Update(deltaTime);
 
-		if (m_debug) {
-			std::cout << "x: " << GetPosition().x << " z: " << GetPosition().z << std::endl;
-		}
 
 		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
 

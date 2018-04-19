@@ -121,8 +121,8 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 	if (fMagThis > 0.015f || fMagOther > 0.015f)
 	{
 		//a_pOther->ApplyForce(GetVelocity());
-		ApplyForce(-m_v3Velocity);
-		a_pOther->ApplyForce(m_v3Velocity);
+		ApplyForce(-m_v3Velocity * 2.0f);
+		a_pOther->ApplyForce(m_v3Velocity * 2.0f);
 	}
 	else
 	{
@@ -130,8 +130,8 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 		if(glm::length(v3Direction) != 0)
 			v3Direction = glm::normalize(v3Direction);
 		v3Direction *= 0.04f;
-		ApplyForce(v3Direction);
-		a_pOther->ApplyForce(-v3Direction);
+		ApplyForce(v3Direction * 2.0f);
+		a_pOther->ApplyForce(-v3Direction * 2.0f);
 	}
 }
 
@@ -209,6 +209,16 @@ void Simplex::MySolver::Separate(vector3 targetPos)
 	vector3 v3steeringForce = v3desiredVelocity - GetVelocity();
 
 	m_v3TotalForce += (v3steeringForce * (1 / mag));
+}
+
+bool Simplex::MySolver::OutOfBounds(void)
+{
+
+	if (m_v3Position.x <= -30.0f || m_v3Position.x >= 30.0f || m_v3Position.z <= -30.0f || m_v3Position.z >= 30.0f) {
+		return true;
+	}
+
+	return false;
 }
 
 vector3 Simplex::MySolver::Cohersion(vector3 direction)

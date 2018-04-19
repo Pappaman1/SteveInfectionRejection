@@ -120,6 +120,8 @@ public:
 	void Seek(vector3 targetPos, float a_fWeight);
 	void Arrival(vector3 targetPos);
 	void Separate(vector3 targetPos);
+	bool OutOfBounds(void);
+
 	vector3 Cohersion(vector3 direction);
 
 	vector3 Alignment(vector3 direction);
