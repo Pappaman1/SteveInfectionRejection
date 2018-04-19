@@ -67,6 +67,7 @@ void MySolver::ApplyForce(vector3 a_v3Force)
 		m_fMass = 0.01f;
 	//f = m * a -> a = f / m
 	m_v3Acceleration += a_v3Force / m_fMass;
+
 }
 vector3 CalculateMaxVelocity(vector3 a_v3Velocity, float maxVelocity)
 {
@@ -95,8 +96,7 @@ void MySolver::Update(float deltaTime)
 
 	m_v3Velocity += m_v3Acceleration * deltaTime;
 	
-	float fMaxVelocity = 5.0f;
-	m_v3Velocity = CalculateMaxVelocity(m_v3Velocity, fMaxVelocity);
+	m_v3Velocity = CalculateMaxVelocity(m_v3Velocity, m_fMaxVelocity);
 
 	ApplyFriction(0.1f);
 	m_v3Velocity = RoundSmallVelocity(m_v3Velocity, 0.028f);
@@ -152,6 +152,7 @@ void Simplex::MySolver::Seek(vector3 targetPos, float a_fWeight)
 	// Step 4: Return steering force -> apply to acceleration
 	m_v3TotalForce += v3steeringForce * a_fWeight;
 }
+
 
 void Simplex::MySolver::Flee(vector3 targetPos, float a_fWeight)
 {
@@ -224,6 +225,11 @@ vector3 Simplex::MySolver::Alignment(vector3 direction)
 void Simplex::MySolver::SetTotalForce(vector3 totalForce)
 {
 	m_v3TotalForce = totalForce;
+}
+
+void Simplex::MySolver::SetMaxVelocity(float a_fVelocity)
+{
+	m_fMaxVelocity = a_fVelocity;
 }
 
 void Simplex::MySolver::SetDirection(vector3 a_v3Direction)

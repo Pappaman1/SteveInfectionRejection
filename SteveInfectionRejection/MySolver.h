@@ -18,6 +18,7 @@ class MySolver
 	vector3 m_v3TotalForce = ZERO_V3;
 	vector3 m_v3Direction = ZERO_V3;
 
+	float m_fMaxVelocity = 5.0f;
 	float m_fMass = 1.0f; //Mass of the solver
 public:
 	/*
@@ -126,6 +127,7 @@ public:
 	void Flee(vector3 targetPos, float a_fWeight);
 
 	void SetTotalForce(vector3 totalForce);
+	void SetMaxVelocity(float a_fVelocity);
 
 	void SetDirection(vector3 a_v3Direction);
 	vector3 GetDirection(void);

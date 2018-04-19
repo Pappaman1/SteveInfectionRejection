@@ -433,29 +433,29 @@ void Application::ProcessKeyboard(void)
 
 #pragma region Character Position
 	float fDelta = m_pSystem->GetDeltaTime(0);
-	float fspeed = 1.5f;
+	float fspeed = 30.0f;
 
 	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
 	//	fspeed = 2.0f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		m_pEntityMngr->ApplyForce(vector3(fspeed * fDelta, 0.0f, 0.0f), "Zombie"); // move entity
+		m_pEntityMngr->ApplyForce(vector3(fspeed, 0.0f, 0.0f), "Zombie"); // move entity
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		m_pEntityMngr->ApplyForce(vector3(-fspeed * fDelta, 0.0f, 0.0f), "Zombie"); // move entity
+		m_pEntityMngr->ApplyForce(vector3(-fspeed, 0.0f, 0.0f), "Zombie"); // move entity
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		m_pEntityMngr->ApplyForce(vector3(0.0f, 0.0f, fspeed * fDelta), "Zombie"); // move entity
+		m_pEntityMngr->ApplyForce(vector3(0.0f, 0.0f, fspeed), "Zombie"); // move entity
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		m_pEntityMngr->ApplyForce(vector3(0.0f, 0.0f, -fspeed * fDelta), "Zombie"); // move entity
+		m_pEntityMngr->ApplyForce(vector3(0.0f, 0.0f, -fspeed), "Zombie"); // move entity
 	}
 
 	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::J))

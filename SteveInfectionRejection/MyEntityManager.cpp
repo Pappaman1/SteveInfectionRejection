@@ -205,19 +205,23 @@ void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 		if (test1 != std::string::npos) {
 			pTemp->SetWander();
 			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
+			pTemp->SetMaxVelocity(3.0f);
 		}
 
 		if (test2 != std::string::npos) {
 			pTemp->SetFlee();
 			pTemp->SetFleeSeek(GetEntity(0));
 			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
+			//pTemp->SetMaxVelocity(8.0f);
 		}
 
 		if (test3 != std::string::npos) {
 			pTemp->SetAngry();
 			pTemp->SetFleeSeek(GetEntity(0));
 			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
+			//pTemp->SetMaxVelocity(8.0f);
 		}
+
 		//create a new temp array with one extra entry
 		PEntity* tempArray = new PEntity[m_uEntityCount + 1];
 		//start from 0 to the current count

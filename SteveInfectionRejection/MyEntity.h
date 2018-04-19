@@ -19,6 +19,8 @@ class MyEntity
 	bool m_wander = false;
 	bool m_flee = false;
 	bool m_angry = false;
+	bool m_debug = false;
+	bool m_fMaxVelocity;
 
 	MyEntity* fleeFrom = nullptr;
 
@@ -278,8 +280,9 @@ public:
 	void SetWander(void);
 	void SetFlee(void);
 	void SetAngry(void);
-
 	void SetDirection(vector3 a_v3Direction);
+	void SetMaxVelocity(float a_fVelocity);
+
 	vector3 GetDirection(void);
 
 	void SetFleeSeek(MyEntity* enemy);

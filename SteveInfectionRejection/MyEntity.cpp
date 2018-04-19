@@ -295,10 +295,6 @@ void Simplex::MyEntity::Update(float deltaTime)
 {
 	if (m_bUsePhysicsSolver)
 	{
-		bool test1 = m_wander;
-		bool test2 = m_flee;
-		bool test3 = m_angry;
-
 
 		if (m_wander) {
 
@@ -312,27 +308,15 @@ void Simplex::MyEntity::Update(float deltaTime)
 		if (m_angry) {
 			m_pSolver->Seek(fleeFrom->GetPosition(), 3.0f);
 		}
-		m_pSolver->Update(deltaTime);
-		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
 
-		//vector3 v3NewDir = glm::normalize(GetVelocity());
-		//vector3 v3CurrDir = GetDirection();
-		////vector3 m_v3NewTargetToLookAt = m_v3NewCameraPosition + m_v3NewLookDirection;
-		//
-		//float fAngleY = 0.0f;
-		//float fDeltaMouse = 0.0f;
-		//
-		//
-		//if (v3CurrDir.x < v3NewDir.x) {
-		//	fAngleY = static_cast<float>(v3NewDir.x - v3CurrDir.x);
-		//}
-		//else {
-		//	fAngleY = static_cast<float>(v3CurrDir.x - v3NewDir.x);
-		//}
-		//
-		//glm::quat m_qRotation = glm::angleAxis(fAngleY, -AXIS_Y);
-		//
-		//vector3 m_v3NewLookDirection = m_qRotation * -AXIS_Z;
+		
+		m_pSolver->Update(deltaTime);
+
+		if (m_debug) {
+			std::cout << "x: " << GetPosition().x << " z: " << GetPosition().z << std::endl;
+		}
+
+		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
 
 	}
 }
@@ -387,6 +371,11 @@ void Simplex::MyEntity::SetAngry(void)
 void Simplex::MyEntity::SetDirection(vector3 a_v3Direction)
 {
 	if (m_pSolver) m_pSolver->SetDirection(a_v3Direction);
+}
+
+void Simplex::MyEntity::SetMaxVelocity(float a_fVelocity)
+{
+	if (m_pSolver) m_pSolver->SetMaxVelocity(a_fVelocity);
 }
 
 vector3 Simplex::MyEntity::GetDirection(void)
