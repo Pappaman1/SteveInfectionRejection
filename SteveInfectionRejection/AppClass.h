@@ -21,6 +21,9 @@ class Application
 private:
 	String m_sProgrammer = "Team Creative Name"; //programmer
 
+	bool m_bGUI_MaxEntity = false; // determine whether or not to say max entities spawned
+	bool m_bGUI_Music_State = false; // determine if music is currently playing
+
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
 	bool m_bGUI_Console = true; //show Credits GUI window?

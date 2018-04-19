@@ -44,8 +44,6 @@ void Application::InitVariables(void)
 
 	// Background music
 	m_soundBGM.openFromFile(sRoute + "infection_rejection_04.wav");
-	m_soundBGM.play();
-	m_soundBGM.setLoop(true);
 #pragma endregion
 }
 void Application::Update(void)

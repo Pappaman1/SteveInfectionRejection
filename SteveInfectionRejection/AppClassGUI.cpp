@@ -24,7 +24,7 @@ void Application::DrawGUI(void)
 	//Calculate the window size to know how to draw
 	NewFrame();
 
-	static ImVec4 v4Color = ImColor(255, 0, 0);
+	static ImVec4 v4Color = ImColor(0, 255, 255);
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar;
 	//Main Window
 	if (m_bGUI_Main)
@@ -40,13 +40,30 @@ void Application::DrawGUI(void)
 				ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 			ImGui::Separator();
 			ImGui::Text("Control:\n");
-			ImGui::Text("   WASD: Movement\n");
+			ImGui::Text("  WASD: Movement\n");
+			ImGui::Text("  Arrows: Movement\n");
 			ImGui::Text("	 F1: Perspective\n");
 			ImGui::Text("	 F2: Orthographic X\n");
 			ImGui::Text("	 F3: Orthographic Y\n");
 			ImGui::Text("	 F4: Orthographic Z\n");
 			ImGui::Separator();
-			ImGui::Text("Arrows: Movement\n");
+
+			// Text feedback on music status
+			ImGui::Text("---Music---");
+			static String sMusicState;
+			if (m_bGUI_Music_State) { sMusicState = "Status: on"; }
+			else sMusicState = "Status: off";
+			ImGui::Text(sMusicState.c_str());
+			ImGui::Text("M: turn on");
+			ImGui::Text("N: turn off");
+			ImGui::Separator();
+
+			// Text feedback on steve spawning
+			ImGui::Text("---Spawn---");
+			static String sSteveSpawn = "Steve Count is below Max";
+			if (m_bGUI_MaxEntity) { sSteveSpawn = "ALERT MAX SPAWN! No more Steves will spawn"; }
+			ImGui::Text(sSteveSpawn.c_str()); 
+			
 		}
 		ImGui::End();
 	}
