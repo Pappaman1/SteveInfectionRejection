@@ -13,6 +13,7 @@ void Application::InitVariables(void)
 	m_pEntityMngr->AddEntity("Minecraft\\Zombie.obj", "Zombie");
 	m_pEntityMngr->UsePhysicsSolver();
 	
+	// spawn enemies that chase you
 	for (int i = 0; i < 6; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_Angry_" + std::to_string(i));
@@ -24,6 +25,7 @@ void Application::InitVariables(void)
 		//m_pEntityMngr->SetMass(i+1);
 	}
 	
+	// spawn targets that run away from you
 	for (int i = 0; i < 40; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_Flee_" + std::to_string(i));
@@ -34,6 +36,17 @@ void Application::InitVariables(void)
 		m_pEntityMngr->UsePhysicsSolver();
 		//m_pEntityMngr->SetMass(i+1);
 	}
+
+#pragma region Audio
+	// Directory to audio
+	String sRoute = m_pSystem->m_pFolder->GetFolderData();
+	sRoute += m_pSystem->m_pFolder->GetFolderAudio();
+
+	// Background music
+	m_soundBGM.openFromFile(sRoute + "infection_rejection_04.wav");
+	m_soundBGM.play();
+	m_soundBGM.setLoop(true);
+#pragma endregion
 }
 void Application::Update(void)
 {
