@@ -88,10 +88,12 @@ vector3 RoundSmallVelocity(vector3 a_v3Velocity, float minVelocity = 0.01f)
 }
 void MySolver::Update(float deltaTime)
 {
+	// add gravity to the total force
 	m_v3TotalForce += vector3(0.0f, -0.035f, 0.0f);
 
 	//m_v3TotalForce = glm::clamp(m_v3TotalForce, vector3(0.0f, 0.0f, 0.0f), vector3(8.0f, 0.0f, 8.0f));
-
+	
+	// get acceleration from the total force
 	ApplyForce(m_v3TotalForce);
 
 	m_v3Velocity += m_v3Acceleration * deltaTime;

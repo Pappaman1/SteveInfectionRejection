@@ -296,6 +296,7 @@ void Simplex::MyEntity::Update(float deltaTime)
 	if (m_bUsePhysicsSolver)
 	{
 
+		// all steves do Wander
 		if (m_wander) {
 
 			m_pSolver->Seek(CalculateWander(), 1.0f);
