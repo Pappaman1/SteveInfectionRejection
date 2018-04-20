@@ -72,7 +72,6 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	{
 	default: break;
 	case sf::Keyboard::Space:
-		m_sound.play();
 		m_pEntityMngr->ApplyForce(vector3(0.0f, 1.0f, 0.0f), "Zombie");
 		break;
 	case sf::Keyboard::LShift:
@@ -93,6 +92,15 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 	switch (a_event.key.code)
 	{
 	default: break;
+	case sf::Keyboard::M: // play music
+		m_soundBGM.play();
+		m_soundBGM.setLoop(true);
+		m_bGUI_Music_State = true;
+		break;
+	case sf::Keyboard::N: // pause music
+		m_soundBGM.pause();
+		m_bGUI_Music_State = false;
+		break;
 	case sf::Keyboard::Escape:
 		m_bRunning = false;
 		break;
@@ -393,36 +401,31 @@ void Application::ProcessKeyboard(void)
 	if (bMultiplier)
 		fMultiplier = 5.0f;
 
-//#pragma region Camera Position
-//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-//		m_pCameraMngr->MoveForward(m_fMovementSpeed * fMultiplier);
-//
-//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-//		m_pCameraMngr->MoveForward(-m_fMovementSpeed * fMultiplier);
-//
-//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-//		m_pCameraMngr->MoveSideways(-m_fMovementSpeed * fMultiplier);
-//
-//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-//		m_pCameraMngr->MoveSideways(m_fMovementSpeed * fMultiplier);
-//
-//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-//		m_pCameraMngr->MoveVertical(-m_fMovementSpeed * fMultiplier);
-//
-//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-//		m_pCameraMngr->MoveVertical(m_fMovementSpeed * fMultiplier);
-//	
-//#pragma endregion
+	//#pragma region Camera Position
+	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	//		m_pCameraMngr->MoveForward(m_fMovementSpeed * fMultiplier);
+	//
+	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	//		m_pCameraMngr->MoveForward(-m_fMovementSpeed * fMultiplier);
+	//
+	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	//		m_pCameraMngr->MoveSideways(-m_fMovementSpeed * fMultiplier);
+	//
+	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	//		m_pCameraMngr->MoveSideways(m_fMovementSpeed * fMultiplier);
+	//
+	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	//		m_pCameraMngr->MoveVertical(-m_fMovementSpeed * fMultiplier);
+	//
+	//	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+	//		m_pCameraMngr->MoveVertical(m_fMovementSpeed * fMultiplier);
+	//	
+	//#pragma endregion
 
-/*
- * @author: Tim Ascencio
- * email: ta3755@g.rit.edu
- * Third Person Camera
- */
 #pragma region Third Person Camera
 	// get steve entity position
 	vector3 zombiePosition = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Zombie"))->GetPosition();
-	
+
 	// set position, target, and up to track steve entity
 	m_pCameraMngr->SetPositionTargetAndUp(
 		vector3(zombiePosition.x, zombiePosition.y + 5.0f, zombiePosition.z - 10.0f),
@@ -458,10 +461,26 @@ void Application::ProcessKeyboard(void)
 		m_pEntityMngr->ApplyForce(vector3(0.0f, 0.0f, -fspeed), "Zombie"); // move entity
 	}
 
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::J))
-	//{
-	//	m_pEntityMngr->ApplyForce(vector3(0.0f, 1.0f, 0.0f), "Zombie"); // move entity
-	//}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		static uint entityCount = m_pEntityMngr->GetEntityCount();
+
+		if (entityCount < 600)
+		{
+			// spawn entities to chase
+			m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_Flee_" + std::to_string(entityCount));
+			entityCount++;
+			vector3 v3Position = vector3(glm::sphericalRand(12.0f));
+			v3Position.y = 0.0f;
+			matrix4 m4Position = glm::translate(v3Position);
+			m_pEntityMngr->SetModelMatrix(m4Position);
+			m_pEntityMngr->UsePhysicsSolver();
+		}
+		else
+		{
+			m_bGUI_MaxEntity = true;
+		}
+	}
 #pragma endregion
 }
 //Joystick
