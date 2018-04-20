@@ -62,7 +62,8 @@ void Application::DrawGUI(void)
 			ImGui::Text("---Spawn---");
 			static String sSteveSpawn = "Steve Count is below Max";
 			if (m_bGUI_MaxEntity) { sSteveSpawn = "ALERT MAX SPAWN! No more Steves will spawn"; }
-			ImGui::Text(sSteveSpawn.c_str()); 
+			ImGui::Text("Space Bar: Spawn Steve's"); 
+			ImGui::Text(sSteveSpawn.c_str());
 			
 		}
 		ImGui::End();
