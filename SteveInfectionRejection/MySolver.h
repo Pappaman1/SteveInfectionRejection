@@ -116,23 +116,61 @@ public:
 	*/
 	void ResolveCollision(MySolver* a_pOther);
 
+	// ========= FUNCTIONS ADDED FOR THE PROJECT ========
 
+	/*
+	USAGE: Seeks a target position to move towards
+	ARGUMENTS: vector3 targetPos (position to move towards) and a_fWeight (how important is this force)
+	*/
 	void Seek(vector3 targetPos, float a_fWeight);
+	/*
+	USAGE: When getting close to a position, it will slow down the entity
+	ARGUMENTS: vector3 targetPos (position to move towards)
+	*/
 	void Arrival(vector3 targetPos);
-	void Separate(vector3 targetPos);
+	/*
+	USAGE: If entities of same type are close to each other, this func will separate them
+	ARGUMENTS: vector3 targetPos (position to move away from) and a_fWeight (how important is this force)
+	*/
+	void Separate(vector3 targetPos, float a_fWeight);
+	/*
+	USAGE: Calculates a random point to move towards
+	ARGUMENTS: ---
+	*/
+	vector3 CalculateWander();
+	/*
+	USAGE: Checks if the entity is getting too far away, if so, will Seek the middle
+	ARGUMENTS: ---
+	*/
+
 	bool OutOfBounds(void);
-
-	vector3 Cohersion(vector3 direction);
-
-	vector3 Alignment(vector3 direction);
-
+	/*
+	USAGE: Moves away an Entity from the target position
+	ARGUMENTS: vector3 targetPos (position to move away from) and a_fWeight (how important is this force)
+	*/
 	void Flee(vector3 targetPos, float a_fWeight);
-
+	/*
+	USAGE: Set's the total force of all added forces
+	ARGUMENTS: vector3 totalForce
+	*/
 	void SetTotalForce(vector3 totalForce);
+	/*
+	USAGE: Set's the max velocity of the Entity
+	ARGUMENTS: vector3 a_fVelocity
+	*/
 	void SetMaxVelocity(float a_fVelocity);
-
+	/*
+	USAGE: Set's the direction of the entity
+	ARGUMENTS: vector3a_v3Direction
+	*/
 	void SetDirection(vector3 a_v3Direction);
+	/*
+	USAGE: Returns the direction of the entity
+	ARGUMENTS: ---
+	*/
 	vector3 GetDirection(void);
+
+
 
 private:
 	/*

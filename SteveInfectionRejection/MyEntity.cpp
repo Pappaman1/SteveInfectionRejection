@@ -295,23 +295,15 @@ void Simplex::MyEntity::Update(float deltaTime)
 {
 	if (m_bUsePhysicsSolver)
 	{
+		// all Steves or Zombies wanders
+		if (m_myType == Steve || m_myType == Zombie) {
 
-		// all steves do Wander
-		if (m_wander) {
-
-			m_pSolver->Seek(CalculateWander(), 1.0f);
+			m_pSolver->Seek(m_pSolver->CalculateWander(), 1.0f);
 		}
 
-		if (m_flee) {
-			m_pSolver->Flee(fleeFrom->GetPosition(), 2.0f);
-		}
-
-		if (m_angry) {
-			m_pSolver->Seek(fleeFrom->GetPosition(), 3.0f);
-		}
-
+		// if going too far away, seek the middle
 		if (m_pSolver->OutOfBounds()) {
-			m_pSolver->Seek(vector3(0.0f, 0.0f, 0.0f), 6.0f);
+			m_pSolver->Seek(vector3(0.0f, 0.0f, 0.0f), 2.0f);
 		}
 		
 		m_pSolver->Update(deltaTime);
@@ -333,31 +325,6 @@ void Simplex::MyEntity::UsePhysicsSolver(bool a_bUse)
 	m_bUsePhysicsSolver = a_bUse;
 }
 
-vector3 Simplex::MyEntity::CalculateWander()
-{
-
-	vector3 v3distAhead = GetPosition() + (GetVelocity() * 2.0f );
-
-	// random number between 0 and 1
-	float f_angle = static_cast<float> (rand()) / static_cast<float>(RAND_MAX);
-
-	// multiply with PI
-	f_angle = f_angle * ( 2 * PI );
-	
-	float f_x = cos(f_angle) * 0.2f;
-	float f_z = sin(f_angle) * 0.2f;
-
-	vector3 v3NewPos = vector3(f_x, 0.0f, f_z);
-
-	vector3 totalPos = v3NewPos + v3distAhead;
-
-	return totalPos;
-}
-
-void Simplex::MyEntity::SetWander(void)
-{
-	m_wander = true;
-}
 
 void Simplex::MyEntity::SetFlee(void)
 {
@@ -367,6 +334,23 @@ void Simplex::MyEntity::SetFlee(void)
 void Simplex::MyEntity::SetAngry(void)
 {
 	m_angry = true;
+}
+
+bool Simplex::MyEntity::GetAngry(void)
+{
+	return m_angry;
+}
+
+void Simplex::MyEntity::SetEntityType(uint a_mType)
+{
+	if (a_mType == 0) m_myType = Steve;
+	if (a_mType == 1) m_myType = Zombie;
+	if (a_mType == 2) m_myType = Main;
+}
+
+MyEntity::EntityType Simplex::MyEntity::GetEntityType()
+{
+	return m_myType;
 }
 
 void Simplex::MyEntity::SetDirection(vector3 a_v3Direction)
@@ -379,6 +363,7 @@ void Simplex::MyEntity::SetMaxVelocity(float a_fVelocity)
 	if (m_pSolver) m_pSolver->SetMaxVelocity(a_fVelocity);
 }
 
+
 vector3 Simplex::MyEntity::GetDirection(void)
 {
 	if (m_pSolver != nullptr)
@@ -386,7 +371,86 @@ vector3 Simplex::MyEntity::GetDirection(void)
 	return vector3();
 }
 
-void Simplex::MyEntity::SetFleeSeek(MyEntity* enemy)
+bool Simplex::MyEntity::IsClose(MyEntity * const other)
 {
-	fleeFrom = enemy;
+	if (!m_bInMemory || !other->m_bInMemory)
+		return true;
+
+	//if the entities are not living in the same dimension
+	//then they can't be close
+	if (!SharesDimension(other))
+		return false;
+
+	return true;
+}
+
+void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
+{
+	// get the distancr
+	vector3 v3distance = GetPosition() - a_pOther->GetPosition();
+
+	// magnitude of that
+	float mag = glm::length(v3distance);
+
+	// if they are of same type (Steves, or Zombies)
+	// then just check if they need to separate
+	if (GetEntityType() == a_pOther->GetEntityType()) {
+
+		// if close, then separate them
+		if (mag <= 5.0f) {
+			m_pSolver->Separate(a_pOther->GetPosition(), 2.0f);
+		}
+
+	} else {
+
+		// if this entity is a zmobie
+		// commented out now since we don't spawn other Zombies yet 
+
+
+		//if (m_myType == Zombie) {
+		//
+		//	// if the other one is an angry Steve, then flee
+		//	if (other->GetAngry()) {
+		//		m_pSolver->Flee(other->GetPosition(), 3.0f);
+		//	}
+		//	// if a scared Steve, then chase
+		//	else {
+		//		m_pSolver->Seek(other->GetPosition(), 2.0f);
+		//	}
+		//
+		//}
+		// if this entity is a Steve
+		//else {
+
+		// if he's angry, then Seek the zombie
+		if (mag <= 10.0f) {
+
+			// if Main, then main do nothing, but others do things to him
+			if (m_myType == Main) {
+
+				// if other is angry, then Seek Main
+				if (a_pOther->GetAngry()) {
+					a_pOther->m_pSolver->Seek(GetPosition(), 3.0f);
+				}
+				// if not, then flee from Main
+				else {
+					a_pOther->m_pSolver->Flee(GetPosition(), 2.0f);
+				}
+			}
+			else {
+				if (m_angry) {
+					m_pSolver->Seek(a_pOther->GetPosition(), 3.0f);
+				}
+
+				// else run away from it
+				else {
+					m_pSolver->Flee(a_pOther->GetPosition(), 2.0f);
+				}
+			}
+
+		}
+
+		//}
+
+	}
 }

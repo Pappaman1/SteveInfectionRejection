@@ -10,11 +10,11 @@ void Application::InitVariables(void)
 
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
-	m_pEntityMngr->AddEntity("Minecraft\\Zombie.obj", "Zombie");
+	m_pEntityMngr->AddEntity("Minecraft\\Zombie.obj", "Main");
 	m_pEntityMngr->UsePhysicsSolver();
 	
 	// spawn enemies that chase you
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_Angry_" + std::to_string(i));
 		vector3 v3Position = vector3(glm::sphericalRand(12.0f));
@@ -26,7 +26,7 @@ void Application::InitVariables(void)
 	}
 	
 	// spawn targets that run away from you
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_Flee_" + std::to_string(i));
 		vector3 v3Position = vector3(glm::sphericalRand(12.0f));
@@ -45,6 +45,11 @@ void Application::InitVariables(void)
 	// Background music
 	m_soundBGM.openFromFile(sRoute + "infection_rejection_04.wav");
 #pragma endregion
+
+#pragma region Octree
+	m_uOctantLevels = 0;
+	m_pRoot = new MyOctant(m_uOctantLevels, 5);
+#pragma endregion
 }
 void Application::Update(void)
 {
@@ -61,8 +66,8 @@ void Application::Update(void)
 	//Is the first person camera active?
 	CameraRotation();
 
+	m_pRoot = new MyOctant(m_uOctantLevels, 5);
 	//Update Entity Manager
-	//m_pEntityMngr->SetDeltaTime(fTimer);
 	m_pEntityMngr->Update(fTimer);
 
 	//Set the model matrix for the main object
@@ -76,6 +81,9 @@ void Application::Display(void)
 {
 	// Clear the screen
 	ClearScreen();
+
+	//display octree
+	if (!hideOctree) m_pRoot->Display(m_uOctantID);
 
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();

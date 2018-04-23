@@ -17,6 +17,7 @@ class MyEntityManager
 	uint m_uEntityCount = 0; //number of elements in the list
 	PEntity* m_mEntityArray = nullptr; //array of MyEntity pointers
 	static MyEntityManager* m_pInstance; // Singleton pointer
+	enum EntityType { Scared, Angry, Zombie };
 
 	float deltaTime = 0;
 public:

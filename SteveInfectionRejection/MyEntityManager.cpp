@@ -183,7 +183,12 @@ void Simplex::MyEntityManager::Update(float deltaT)
 			{
 				m_mEntityArray[i]->ResolveCollision(m_mEntityArray[j]);
 			}
+
+			if (m_mEntityArray[i]->IsClose(m_mEntityArray[j])) {
+				m_mEntityArray[i]->ResolveBeingClose(m_mEntityArray[j]);
+			}
 		}
+
 		//Update each entity
 		m_mEntityArray[i]->Update(deltaT);
 	}
@@ -192,34 +197,41 @@ void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 {
 	//Create a temporal entity to store the object
 	MyEntity* pTemp = new MyEntity(a_sFileName, a_sUniqueID);
+
 	//if I was able to generate it add it to the list
 	if (pTemp->IsInitialized())
 	{
-		String word1 = "Steve";
-		String word2 = "Flee";
-		String word3 = "Angry";
-		size_t test1 = a_sUniqueID.find(word1);
-		size_t test2 = a_sUniqueID.find(word2);
-		size_t test3 = a_sUniqueID.find(word3);
+		// keywords
+		String s_scared = "Flee";
+		String s_angry = "Angry";
 
-		if (test1 != std::string::npos) {
-			pTemp->SetWander();
+		// check for keywords
+		size_t s_keyword1 = a_sUniqueID.find(s_scared);
+		size_t s_keyword2 = a_sUniqueID.find(s_angry);
+
+
+		if (s_keyword1 != std::string::npos) {
+			// Scared Steves
+			pTemp->SetFlee();
 			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
 			pTemp->SetMaxVelocity(3.0f);
-		}
-
-		if (test2 != std::string::npos) {
-			pTemp->SetFlee();
-			pTemp->SetFleeSeek(GetEntity(0));
-			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
-			//pTemp->SetMaxVelocity(8.0f);
-		}
-
-		if (test3 != std::string::npos) {
+			// Steve type
+			pTemp->SetEntityType(0);
+		} else if (s_keyword2 != std::string::npos) {
+			// Angry Steves
 			pTemp->SetAngry();
-			pTemp->SetFleeSeek(GetEntity(0));
 			pTemp->SetVelocity(vector3(2.0f, 0.0f, 1.5f));
-			//pTemp->SetMaxVelocity(8.0f);
+			pTemp->SetMaxVelocity(3.0f);
+			// Steve type
+			pTemp->SetEntityType(0);
+
+		} else if (a_sUniqueID == "Main") {
+			// Main character
+			pTemp->SetEntityType(2);
+		}
+		else {
+			// Zombies
+			pTemp->SetEntityType(1);
 		}
 
 		//create a new temp array with one extra entry

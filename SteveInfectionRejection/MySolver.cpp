@@ -124,7 +124,7 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 	{
 		//a_pOther->ApplyForce(GetVelocity());
 		ApplyForce(-m_v3Velocity * 2.0f);
-		a_pOther->ApplyForce(m_v3Velocity * 2.0f);
+		a_pOther->ApplyForce(m_v3Velocity);
 	}
 	else
 	{
@@ -133,7 +133,7 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 			v3Direction = glm::normalize(v3Direction);
 		v3Direction *= 0.04f;
 		ApplyForce(v3Direction * 2.0f);
-		a_pOther->ApplyForce(-v3Direction * 2.0f);
+		a_pOther->ApplyForce(-v3Direction);
 	}
 }
 
@@ -200,9 +200,9 @@ void Simplex::MySolver::Arrival(vector3 targetPos)
 	m_v3TotalForce += v3steeringForce;
 }
 
-void Simplex::MySolver::Separate(vector3 targetPos)
+void Simplex::MySolver::Separate(vector3 targetPos, float a_fWeight)
 {
-	vector3 v3desiredVelocity = targetPos - GetPosition();
+	vector3 v3desiredVelocity = GetPosition() - targetPos;
 	float mag = glm::length(v3desiredVelocity);
 
 	glm::normalize(v3desiredVelocity);
@@ -210,27 +210,42 @@ void Simplex::MySolver::Separate(vector3 targetPos)
 
 	vector3 v3steeringForce = v3desiredVelocity - GetVelocity();
 
-	m_v3TotalForce += (v3steeringForce * (1 / mag));
+	m_v3TotalForce += (v3steeringForce * (1.0f / mag)) * a_fWeight;
 }
+
+vector3 Simplex::MySolver::CalculateWander()
+{
+	vector3 v3distAhead = GetPosition() + (GetVelocity() * 2.5f);
+
+	// reset random
+	srand(time(NULL));
+
+	// random number between 0 and 1
+	float f_angle = static_cast<float> (rand()) / static_cast<float>(RAND_MAX);
+
+	// multiply with 2PI
+	f_angle = f_angle * (2 * PI);
+
+	// get angles
+	float f_x = cos(f_angle) * 0.2f;
+	float f_z = sin(f_angle) * 0.2f;
+
+	// new position
+	vector3 v3NewPos = vector3(f_x, 0.0f, f_z);
+
+	// add future pos and the new pos
+	return (v3NewPos + v3distAhead);
+}
+
 
 bool Simplex::MySolver::OutOfBounds(void)
 {
 
-	if (m_v3Position.x <= -30.0f || m_v3Position.x >= 30.0f || m_v3Position.z <= -30.0f || m_v3Position.z >= 30.0f) {
+	if (m_v3Position.x <= -40.0f || m_v3Position.x >= 40.0f || m_v3Position.z <= -40.0f || m_v3Position.z >= 40.0f) {
 		return true;
 	}
 
 	return false;
-}
-
-vector3 Simplex::MySolver::Cohersion(vector3 direction)
-{
-	return vector3();
-}
-
-vector3 Simplex::MySolver::Alignment(vector3 direction)
-{
-	return vector3();
 }
 
 

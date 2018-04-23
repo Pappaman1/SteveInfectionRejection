@@ -1,3 +1,4 @@
+
 /*----------------------------------------------
 Programmer: Alberto Bobadilla (labigm@gmail.com)
 Date: 2017/07
@@ -16,13 +17,16 @@ class MyEntity
 	bool m_bInMemory = false; //loaded flag
 	bool m_bSetAxis = false; //render axis flag
 	String m_sUniqueID = ""; //Unique identifier name
-	bool m_wander = false;
-	bool m_flee = false;
-	bool m_angry = false;
-	bool m_debug = false;
+
+	bool m_flee = false;	// if a scared Steve
+	bool m_angry = false;	// if an angry Steve
 	bool m_fMaxVelocity;
 
-	MyEntity* fleeFrom = nullptr;
+	// Different entity types
+	enum EntityType { Steve, Zombie, Main };
+
+	// this entitys type
+	EntityType m_myType;
 
 	uint m_nDimensionCount = 0; //tells how many dimensions this entity lives in
 	uint* m_DimensionArray = nullptr; //Dimensions on which this entity is located
@@ -275,17 +279,69 @@ public:
 	*/
 	void UsePhysicsSolver(bool a_bUse = true);
 
-	vector3 CalculateWander();
+	// ==== FUNCTIONS ADDED FOR PROJECT ====
 
-	void SetWander(void);
+	/*
+	USAGE: Determines if this is a scared Steve
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
 	void SetFlee(void);
+	/*
+	USAGE: Determines if this is an angry Steve
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
 	void SetAngry(void);
+	/*
+	USAGE: A getter for the Angry boolean
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+	bool GetAngry(void);
+	/*
+	USAGE: Sets what type of Entity this is
+	ARGUMENTS: a_mType (0, 1, or 2)
+	OUTPUT: ---
+	*/
+	void SetEntityType(uint a_mType);
+	/*
+	USAGE: Returns the Entity type
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+	EntityType GetEntityType();
+	/*
+	USAGE: Sets the Direction of this Entity
+	ARGUMENTS: a_v3Direction direction to face
+	OUTPUT: ---
+	*/
 	void SetDirection(vector3 a_v3Direction);
+	/*
+	USAGE: Sets the max velocity for this Entity
+	ARGUMENTS: a_fVelocity max float
+	OUTPUT: ---
+	*/
 	void SetMaxVelocity(float a_fVelocity);
-
+	/*
+	USAGE: Returns the Direction
+	ARGUMENTS: a_fVelocity max float
+	OUTPUT: ---
+	*/
 	vector3 GetDirection(void);
+	/*
+	USAGE: Checks if two entities are close (exist in same dimension)
+	ARGUMENTS: other (pointer to another Entity)
+	OUTPUT: ---
+	*/
+	bool IsClose(MyEntity* const other);
+	/*
+	USAGE: If two Entities are close, then do appropriate Steering Behaviors and stuff
+	ARGUMENTS: a_pOther (pointer to another Entity)
+	OUTPUT: ---
+	*/
+	void ResolveBeingClose(MyEntity* a_pOther);
 
-	void SetFleeSeek(MyEntity* enemy);
 
 private:
 	/*

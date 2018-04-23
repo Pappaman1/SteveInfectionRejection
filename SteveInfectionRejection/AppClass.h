@@ -11,6 +11,7 @@ Date: 2017/06
 #include "imgui\ImGuiObject.h"
 
 #include "MyEntityManager.h"
+#include "MyOctant.h"
 
 namespace Simplex
 {
@@ -18,11 +19,17 @@ namespace Simplex
 class Application
 {
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
+	uint m_uOctantID = -1; //Index of Octant to display
+	uint m_uObjects = 0; //Number of objects in the scene
+	uint m_uOctantLevels = 0; //Number of levels in the octree
+
 private:
 	String m_sProgrammer = "Team Creative Name"; //programmer
 
 	bool m_bGUI_MaxEntity = false; // determine whether or not to say max entities spawned
 	bool m_bGUI_Music_State = false; // determine if music is currently playing
+	bool hideOctree = false; // determine if we should hide octant display completely
+
 
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
@@ -58,6 +65,8 @@ private:
 	sf::SoundBuffer m_soundBuffer; //buffer to play sound from
 	sf::Sound m_sound; //sound effect
 	sf::Music m_soundBGM; //background music
+
+	MyOctant* m_pRoot = nullptr;
 
 public:
 #pragma region Constructor / Run / Destructor
