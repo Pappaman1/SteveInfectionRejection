@@ -340,6 +340,14 @@ public:
 	OUTPUT: ---
 	*/
 	vector3 GetDirection(void);
+
+	/*
+	USAGE: Returns the Direction the character should be facing
+	ARGUMENTS: a_fVelocity max float
+	OUTPUT: ---
+	*/
+	vector3 GetProperFacing(void);
+
 	/*
 	USAGE: Checks if two entities are close (exist in same dimension)
 	ARGUMENTS: other (pointer to another Entity)

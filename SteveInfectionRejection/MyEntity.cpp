@@ -314,20 +314,27 @@ void Simplex::MyEntity::Update(float deltaTime)
 
 		
 
-		//PUT NEW ROTATION CODE STUFF HERE
-		//WORKING ON rotate model here based on difference of current facing and facing received from MySolver
 
-		//if object has moved, if it's not facing the same direction as before, rotate it.
 
-		//TODO: 
-		//Put something in here (in Solver) to set a variable to send to MyEntity's Update function so that it knows what value to use for the acceleration check
-		//something like:
-		//vector3 TransmittedForward = vector3(m_v3Velocity.x, 0.0f, m_v3Velocity.y);
+		
+		//Get a normalized vector from Solver for the direction the object is currently moving.  We only need X and Z.  We don't want the models facing up or down.
+		vector3 TransmittedForward = vector3(GetProperFacing().x, 0.0f, GetProperFacing().z);
 
-			//GET entity's current facing (a variable of an imaginary velocity starting on initialization as facing forwards at (0.0f, 0.0f, -1.0f)
-			//ROTATE entity based on difference between current facing and normalized velocity
-			//SET entity's current facing to current normalized velocity
-			//
+		//Compare the current direction being traveled to the entity's current forward.  If they're different, continue.
+		if (TransmittedForward != m_v3Forward) {
+			
+			//TODO compare TransmittedForward to m_v3Forward (the Entity's forward) to know how much to rotate the entity so it faces the right way
+
+			//TODO Rotate the entity to be facing the right way
+
+			//Set the entity's logged forward vector to its new one
+			m_v3Forward = TransmittedForward;
+		}
+
+		//DEBUG: Making sure the chosen object for rotation won't affect movement
+		//NOTE: currently throws exception on runtime.  Need to look into why.
+		//SetModelMatrix(glm::rotate(IDENTITY_M4, 1.0f, GetProperFacing()));
+
 		
 
 	}
@@ -387,6 +394,13 @@ vector3 Simplex::MyEntity::GetDirection(void)
 {
 	if (m_pSolver != nullptr)
 		return m_pSolver->GetDirection();
+	return vector3();
+}
+
+vector3 Simplex::MyEntity::GetProperFacing(void)
+{
+	if (m_pSolver != nullptr)
+		return m_pSolver->GetProperFacing();
 	return vector3();
 }
 
