@@ -37,6 +37,16 @@ void Application::InitVariables(void)
 		//m_pEntityMngr->SetMass(i+1);
 	}
 
+	// spawn projectiles to prove object is loading properly
+	for (int i = 0; i < 5; i++)
+	{
+		m_pEntityMngr->AddEntity("Minecraft\\NinjaStar.obj", "Ninjastar_");
+		vector3 v3Position = vector3(glm::sphericalRand(5.0f));
+		matrix4 m4Position = glm::translate(v3Position);
+		m_pEntityMngr->SetModelMatrix(m4Position);
+		m_pEntityMngr->UsePhysicsSolver();
+	}
+
 #pragma region Audio
 	// Directory to audio
 	String sRoute = m_pSystem->m_pFolder->GetFolderData();
@@ -48,6 +58,7 @@ void Application::InitVariables(void)
 
 #pragma region Octree
 	m_uOctantLevels = 0;
+	SafeDelete(m_pRoot);
 	m_pRoot = new MyOctant(m_uOctantLevels, 5);
 #pragma endregion
 }

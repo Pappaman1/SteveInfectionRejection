@@ -1,0 +1,15 @@
+newmtl blinn1SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+bump Metal-Scratches-Steel-Surface-Background-Gray-Color-WallpapersByte-com-1366x768.jpg -bm 0.25
+Ni 1.00
+Ks 0.50 0.50 0.50
+newmtl blinn2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 3.00
+Ks 1.00 1.00 1.00

@@ -71,9 +71,9 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	switch (a_event.key.code)
 	{
 	default: break;
-	case sf::Keyboard::Space:
+	/*case sf::Keyboard::Space:
 		m_pEntityMngr->ApplyForce(vector3(0.0f, 1.0f, 0.0f), "Main");
-		break;
+		break;*/
 	case sf::Keyboard::LShift:
 	case sf::Keyboard::RShift:
 		m_bModifier = true;
