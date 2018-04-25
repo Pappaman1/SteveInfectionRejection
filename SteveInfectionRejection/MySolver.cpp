@@ -104,11 +104,28 @@ void MySolver::Update(float deltaTime)
 	m_v3Velocity = RoundSmallVelocity(m_v3Velocity, 0.028f);
 
 	m_v3Position += m_v3Velocity * deltaTime;
+
 			
 	if (m_v3Position.y <= 0)
 	{
 		m_v3Position.y = 0;
 		m_v3Velocity.y = 0;
+	}
+
+	//WORKING ON rotate model here based on difference of current facing and current velocity.
+
+	//if object has moved, if it's not facing the same direction as before, rotate it.
+
+	//TODO: port this to MyEntity's Update function.  Just realized it probably won't work here
+	//Put something in here (in Solver) to set a variable to send to MyEntity's Update function so that it knows what value to use for the acceleration check
+	//something like:
+	//vector3 TransmittedForward = vector3(m_v3Acceleration.x, 0.0f, m_v3Acceleration.y);
+
+	if (m_v3Acceleration.x > 0 || m_v3Acceleration.y > 0) {
+		//GET entity's current facing (a variable of an imaginary velocity starting on initialization as facing forwards at (0.0f, 0.0f, -1.0f)
+		//ROTATE entity based on difference between current facing and normalized acceleration
+		//SET entity's current facing to current normalized acceleration
+		//
 	}
 
 	m_v3Acceleration = ZERO_V3;

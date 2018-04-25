@@ -23,6 +23,7 @@ bool Simplex::MyEntity::IsInitialized(void){ return m_bInMemory; }
 String Simplex::MyEntity::GetUniqueID(void) { return m_sUniqueID; }
 void Simplex::MyEntity::SetAxisVisible(bool a_bSetAxis) { m_bSetAxis = a_bSetAxis; }
 void Simplex::MyEntity::SetPosition(vector3 a_v3Position) { if(m_pSolver) m_pSolver->SetPosition(a_v3Position); }
+vector3 m_v3Forward =  vector3(0.0f, 0.0f, -1.0f);
 Simplex::vector3 Simplex::MyEntity::GetPosition(void)
 {
 	if (m_pSolver != nullptr)
@@ -311,6 +312,8 @@ void Simplex::MyEntity::Update(float deltaTime)
 
 		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
 
+		//PUT NEW ROTATION CODE STUFF HERE
+
 	}
 }
 void Simplex::MyEntity::ResolveCollision(MyEntity* a_pOther)
@@ -384,6 +387,10 @@ bool Simplex::MyEntity::IsClose(MyEntity * const other)
 	return true;
 }
 
+
+
+
+
 void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 {
 	// get the distancr
@@ -453,4 +460,13 @@ void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 		//}
 
 	}
+}
+
+vector3 Simplex::MyEntity::GetForward()
+{
+	return m_v3Forward;
+}
+
+void Simplex::MyEntity::SetForward(vector3 freshForward) {
+	m_v3Forward = freshForward;
 }
