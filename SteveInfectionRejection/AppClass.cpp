@@ -71,13 +71,16 @@ void Application::Update(void)
 	static uint uClock = m_pSystem->GenClock();		//generate a new clock for that timer
 	fTimer = m_pSystem->GetDeltaTime(uClock);		//get the delta time for that timer
 
+	int time = static_cast<int>(fTimer);
 	//Is the ArcBall active?
 	ArcBall();
 
 	//Is the first person camera active?
 	CameraRotation();
 
-	m_pRoot = new MyOctant(m_uOctantLevels, 5);
+	if ((time % 2) == 0) {
+		m_pRoot = new MyOctant(m_uOctantLevels, 5);
+	}
 	//Update Entity Manager
 	m_pEntityMngr->Update(fTimer);
 
