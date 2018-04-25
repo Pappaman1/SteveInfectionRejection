@@ -312,7 +312,23 @@ void Simplex::MyEntity::Update(float deltaTime)
 
 		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
 
+		
+
 		//PUT NEW ROTATION CODE STUFF HERE
+		//WORKING ON rotate model here based on difference of current facing and facing received from MySolver
+
+		//if object has moved, if it's not facing the same direction as before, rotate it.
+
+		//TODO: 
+		//Put something in here (in Solver) to set a variable to send to MyEntity's Update function so that it knows what value to use for the acceleration check
+		//something like:
+		//vector3 TransmittedForward = vector3(m_v3Velocity.x, 0.0f, m_v3Velocity.y);
+
+			//GET entity's current facing (a variable of an imaginary velocity starting on initialization as facing forwards at (0.0f, 0.0f, -1.0f)
+			//ROTATE entity based on difference between current facing and normalized velocity
+			//SET entity's current facing to current normalized velocity
+			//
+		
 
 	}
 }

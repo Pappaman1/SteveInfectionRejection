@@ -6,6 +6,7 @@ void MySolver::Init(void)
 	m_v3Acceleration = ZERO_V3;
 	m_v3Position = ZERO_V3;
 	m_v3Velocity = ZERO_V3;
+	vector3 m_v3ProperFacing = vector3(0.0f, 0.0f, 1.0f);
 	m_fMass = 1.0f;
 }
 void MySolver::Swap(MySolver& other)
@@ -112,21 +113,15 @@ void MySolver::Update(float deltaTime)
 		m_v3Velocity.y = 0;
 	}
 
-	//WORKING ON rotate model here based on difference of current facing and current velocity.
+	
 
-	//if object has moved, if it's not facing the same direction as before, rotate it.
-
-	//TODO: port this to MyEntity's Update function.  Just realized it probably won't work here
-	//Put something in here (in Solver) to set a variable to send to MyEntity's Update function so that it knows what value to use for the acceleration check
-	//something like:
-	//vector3 TransmittedForward = vector3(m_v3Acceleration.x, 0.0f, m_v3Acceleration.y);
-
-	if (m_v3Acceleration.x > 0 || m_v3Acceleration.y > 0) {
-		//GET entity's current facing (a variable of an imaginary velocity starting on initialization as facing forwards at (0.0f, 0.0f, -1.0f)
-		//ROTATE entity based on difference between current facing and normalized acceleration
-		//SET entity's current facing to current normalized acceleration
-		//
+	//Set properfacing to velocity and then normalize it to get a direction.
+	m_v3ProperFacing = m_v3Velocity;
+	//safety.  Don't normalize vectors of zero or stuff WILL crash.
+	if (m_v3ProperFacing != ZERO_V3) {
+		glm::normalize(m_v3ProperFacing);
 	}
+	
 
 	m_v3Acceleration = ZERO_V3;
 	m_v3TotalForce = ZERO_V3;
@@ -284,4 +279,9 @@ void Simplex::MySolver::SetDirection(vector3 a_v3Direction)
 vector3 Simplex::MySolver::GetDirection(void)
 {
 	return m_v3Direction;
+}
+
+
+vector3 Simplex::MySolver::GetProperFacing(void) {
+	return m_v3ProperFacing;
 }
