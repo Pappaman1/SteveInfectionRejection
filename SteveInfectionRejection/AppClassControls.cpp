@@ -455,7 +455,7 @@ void Application::ProcessKeyboard(void)
 
 	// set position, target, and up to track steve entity
 	m_pCameraMngr->SetPositionTargetAndUp(
-		vector3(zombiePosition.x, zombiePosition.y + 5.0f, zombiePosition.z - 10.0f),
+		vector3(zombiePosition.x, zombiePosition.y + 3.0f, zombiePosition.z - 10.0f),
 		zombiePosition,
 		vector3(0.0f, 1.0f, 0.0f)
 	); // move camera
