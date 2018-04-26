@@ -21,12 +21,17 @@ class MyEntity
 	bool m_flee = false;	// if a scared Steve
 	bool m_angry = false;	// if an angry Steve
 	bool m_fMaxVelocity;
+	bool m_attacking = false;
+	bool m_readyToAttack = false;	// if able to throw ninja star
+	uint m_numOfLives = 0;
 
 	// Different entity types
-	enum EntityType { Steve, Zombie, Main };
+	enum EntityType { Steve, Zombie, Main, Star };
 
 	// this entitys type
 	EntityType m_myType;
+
+	MyEntity* m_ninjaParent = nullptr;
 
 	uint m_nDimensionCount = 0; //tells how many dimensions this entity lives in
 	uint* m_DimensionArray = nullptr; //Dimensions on which this entity is located
@@ -352,7 +357,22 @@ public:
 	OUTPUT: ---
 	*/
 	void ResolveBeingClose(MyEntity* a_pOther);
+	/*
+	USAGE: Returns if the Entity is ready to throw ninja star or not
+	ARGUMENTS: ---- 
+	OUTPUT: ---
+	*/
+	bool IsReadyToAttack(void);
 
+	void DidAttack(void);
+	
+	void SetAttacking(void);
+
+	void SetNinjaParent(MyEntity* a_pParent);
+	MyEntity* GetNinjaParent(void);
+
+	void SetNumOfLives(uint a_pNum);
+	uint GetNumOfLives(void);
 
 private:
 	/*
