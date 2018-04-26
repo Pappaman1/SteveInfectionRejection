@@ -332,8 +332,9 @@ void Simplex::MyEntity::Update(float deltaTime)
 		}
 
 		//DEBUG: Making sure the chosen object for rotation won't affect movement
-		//NOTE: currently throws exception on runtime.  Need to look into why.
-		//SetModelMatrix(glm::rotate(IDENTITY_M4, 1.0f, GetProperFacing()));
+		matrix4 tempMatrix = glm::rotate(IDENTITY_M4, 20.0f, vector3(0.0f, 1.0f, 0.0f));
+		tempMatrix[3] = m_m4ToWorld[3];
+		m_m4ToWorld = tempMatrix;
 
 		
 
@@ -423,7 +424,7 @@ bool Simplex::MyEntity::IsClose(MyEntity * const other)
 
 void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 {
-	// get the distancr
+	// get the distance
 	vector3 v3distance = GetPosition() - a_pOther->GetPosition();
 
 	// magnitude of that
