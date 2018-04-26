@@ -14,7 +14,7 @@ void Application::InitVariables(void)
 	m_pEntityMngr->UsePhysicsSolver();
 	
 	// spawn enemies that chase you
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_Angry_" + std::to_string(i));
 		vector3 v3Position = vector3(glm::sphericalRand(12.0f));
@@ -22,11 +22,12 @@ void Application::InitVariables(void)
 		matrix4 m4Position = glm::translate(v3Position);
 		m_pEntityMngr->SetModelMatrix(m4Position);
 		m_pEntityMngr->UsePhysicsSolver();
+	
 		//m_pEntityMngr->SetMass(i+1);
 	}
 	
 	// spawn targets that run away from you
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve_Flee_" + std::to_string(i));
 		vector3 v3Position = vector3(glm::sphericalRand(12.0f));
@@ -38,14 +39,15 @@ void Application::InitVariables(void)
 	}
 
 	// spawn projectiles to prove object is loading properly
-	for (int i = 0; i < 5; i++)
-	{
-		m_pEntityMngr->AddEntity("Minecraft\\NinjaStar.obj", "Ninjastar_");
-		vector3 v3Position = vector3(glm::sphericalRand(5.0f));
-		matrix4 m4Position = glm::translate(v3Position);
-		m_pEntityMngr->SetModelMatrix(m4Position);
-		m_pEntityMngr->UsePhysicsSolver();
-	}
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	m_pEntityMngr->AddEntity("Minecraft\\NinjaStar.obj", "Ninjastar_");
+	//	vector3 v3Position = vector3(glm::sphericalRand(5.0f));
+	//	v3Position.y = 0.0f;
+	//	matrix4 m4Position = glm::translate(v3Position);
+	//	m_pEntityMngr->SetModelMatrix(m4Position);
+	//	m_pEntityMngr->UsePhysicsSolver();
+	//}
 
 #pragma region Audio
 	// Directory to audio
@@ -67,18 +69,21 @@ void Application::Update(void)
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
+	
 	static float fTimer = 0;
 	static uint uClock = m_pSystem->GenClock();		//generate a new clock for that timer
 	fTimer = m_pSystem->GetDeltaTime(uClock);		//get the delta time for that timer
-
 	int time = static_cast<int>(fTimer);
+
 	//Is the ArcBall active?
 	ArcBall();
 
 	//Is the first person camera active?
 	CameraRotation();
 
-	if ((time % 2) == 0) {
+	if ((time % 60) == 0)
+	{
+		SafeDelete(m_pRoot);
 		m_pRoot = new MyOctant(m_uOctantLevels, 5);
 	}
 	//Update Entity Manager

@@ -182,6 +182,8 @@ public:
 	*/
 	vector3 GetProperFacing(void);
 
+	void AddInertia(vector3 a_v3Velocity);
+
 
 
 private:

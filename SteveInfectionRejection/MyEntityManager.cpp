@@ -187,13 +187,26 @@ void Simplex::MyEntityManager::Update(float deltaT)
 			if (m_mEntityArray[i]->IsClose(m_mEntityArray[j])) {
 				m_mEntityArray[i]->ResolveBeingClose(m_mEntityArray[j]);
 			}
+
 		}
 
 		//Update each entity
 		m_mEntityArray[i]->Update(deltaT);
+
+		// if ready to attack, spawn a Ninja start
+		if (m_mEntityArray[i]->IsReadyToAttack()) {
+			AddEntity("Minecraft\\NinjaStar.obj", "Ninjastar_", i);
+			vector3 v3Position = m_mEntityArray[i]->GetPosition();
+			v3Position.y = 0.8f;
+			matrix4 m4Position = glm::translate(v3Position);
+			SetModelMatrix(m4Position);
+			UsePhysicsSolver();
+
+			m_mEntityArray[i]->DidAttack();
+		}
 	}
 }
-void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
+void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID, uint a_uSpawnedBy)
 {
 	//Create a temporal entity to store the object
 	MyEntity* pTemp = new MyEntity(a_sFileName, a_sUniqueID);
@@ -204,10 +217,12 @@ void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 		// keywords
 		String s_scared = "Flee";
 		String s_angry = "Angry";
+		String s_star = "Ninjastar";
 
 		// check for keywords
 		size_t s_keyword1 = a_sUniqueID.find(s_scared);
 		size_t s_keyword2 = a_sUniqueID.find(s_angry);
+		size_t s_keyword3 = a_sUniqueID.find(s_star);
 
 
 		if (s_keyword1 != std::string::npos) {
@@ -225,7 +240,19 @@ void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 			// Steve type
 			pTemp->SetEntityType(0);
 
-		} else if (a_sUniqueID == "Main") {
+		} else if (s_keyword3 != std::string::npos) {
+			// Ninja Stars
+			pTemp->SetEntityType(3);
+
+			// Get velocity from parent Steve
+			pTemp->SetVelocity(m_mEntityArray[a_uSpawnedBy]->GetVelocity() * 5.0f);
+			pTemp->SetDirection(m_mEntityArray[a_uSpawnedBy]->GetDirection());
+
+			// set parent so I can skip collision detection with this
+			pTemp->SetNinjaParent(m_mEntityArray[a_uSpawnedBy]);
+			pTemp->SetMaxVelocity(8.0f);
+
+		}	else if (a_sUniqueID == "Main") {
 			// Main character
 			pTemp->SetEntityType(2);
 		}

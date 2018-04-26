@@ -278,6 +278,15 @@ bool Simplex::MyEntity::IsColliding(MyEntity* const other)
 	if (!SharesDimension(other))
 		return false;
 
+	// returns false if the star collides with the Steve that threw it
+	if ( m_myType == Star && other->GetUniqueID() == m_ninjaParent->GetUniqueID() ) {
+		return false;
+	} else if (m_myType == Steve && other->GetEntityType() == Star) {
+		if (GetUniqueID() == other->GetNinjaParent()->GetUniqueID()) {
+			return false;
+		}
+	}
+
 	return m_pRigidBody->IsColliding(other->GetRigidBody());
 }
 void Simplex::MyEntity::ClearCollisionList(void)
@@ -296,19 +305,30 @@ void Simplex::MyEntity::Update(float deltaTime)
 {
 	if (m_bUsePhysicsSolver)
 	{
-		// all Steves or Zombies wanders
+		// all Steves or Zombies wanders and need to check if they are out of bounds
 		if (m_myType == Steve || m_myType == Zombie) {
 
 			m_pSolver->Seek(m_pSolver->CalculateWander(), 1.0f);
+
+			// if going too far away, seek the middle
+			if (m_pSolver->OutOfBounds()) {
+				m_pSolver->Seek(vector3(0.0f, 0.0f, 0.0f), 2.0f);
+			}
 		}
 
-		// if going too far away, seek the middle
-		if (m_pSolver->OutOfBounds()) {
-			m_pSolver->Seek(vector3(0.0f, 0.0f, 0.0f), 2.0f);
-		}
-		
+		static float coolDown = 0.0f;
+	
+
 		m_pSolver->Update(deltaTime);
 
+		// cooldown to attack
+		if (m_attacking) {
+			coolDown = coolDown + deltaTime;
+			if (coolDown >= 60.0f) {
+				m_readyToAttack = true;
+				coolDown = 0.0f;
+			}
+		}
 
 		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
 
@@ -373,6 +393,7 @@ void Simplex::MyEntity::SetEntityType(uint a_mType)
 	if (a_mType == 0) m_myType = Steve;
 	if (a_mType == 1) m_myType = Zombie;
 	if (a_mType == 2) m_myType = Main;
+	if (a_mType == 3) m_myType = Star;
 }
 
 MyEntity::EntityType Simplex::MyEntity::GetEntityType()
@@ -419,24 +440,23 @@ bool Simplex::MyEntity::IsClose(MyEntity * const other)
 }
 
 
-
-
-
 void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 {
 	// get the distance
 	vector3 v3distance = GetPosition() - a_pOther->GetPosition();
 
 	// magnitude of that
-	float mag = glm::length(v3distance);
+	float mag = 0.0f;
+
+	if (v3distance != vector3()) mag = glm::length(v3distance);
 
 	// if they are of same type (Steves, or Zombies)
 	// then just check if they need to separate
 	if (GetEntityType() == a_pOther->GetEntityType()) {
 
 		// if close, then separate them
-		if (mag <= 5.0f) {
-			m_pSolver->Separate(a_pOther->GetPosition(), 2.0f);
+		if (mag <= 10.0f) {
+			m_pSolver->Separate(a_pOther->GetPosition(), 4.0f);
 		}
 
 	} else {
@@ -464,20 +484,26 @@ void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 		if (mag <= 10.0f) {
 
 			// if Main, then main do nothing, but others do things to him
-			if (m_myType == Main) {
+			if (m_myType == Main && a_pOther->GetEntityType() == Steve) {
 
 				// if other is angry, then Seek Main
 				if (a_pOther->GetAngry()) {
 					a_pOther->m_pSolver->Seek(GetPosition(), 3.0f);
+
+					// set to attack mode
+					a_pOther->SetAttacking();
 				}
 				// if not, then flee from Main
 				else {
 					a_pOther->m_pSolver->Flee(GetPosition(), 2.0f);
 				}
 			}
-			else {
+			else if (m_myType == Steve && a_pOther->GetEntityType() == Main || a_pOther->GetEntityType() == Zombie) {
 				if (m_angry) {
 					m_pSolver->Seek(a_pOther->GetPosition(), 3.0f);
+
+					// set to attack mode
+					m_attacking = true;
 				}
 
 				// else run away from it
@@ -487,10 +513,50 @@ void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 			}
 
 		}
+		else {
+			// not attacking
+			m_attacking = false;
+			a_pOther->SetAttacking();
+		}
 
 		//}
 
 	}
+}
+
+bool Simplex::MyEntity::IsReadyToAttack(void)
+{
+	return m_readyToAttack;
+}
+
+void Simplex::MyEntity::DidAttack(void)
+{
+	m_readyToAttack = false;
+}
+
+void Simplex::MyEntity::SetAttacking(void)
+{
+	m_attacking = !m_attacking;
+}
+
+void Simplex::MyEntity::SetNinjaParent(MyEntity * a_pParent)
+{
+	m_ninjaParent = a_pParent;
+}
+
+MyEntity * Simplex::MyEntity::GetNinjaParent(void)
+{
+	return m_ninjaParent;
+}
+
+void Simplex::MyEntity::SetNumOfLives(uint a_pNum)
+{
+	m_numOfLives = a_pNum;
+}
+
+uint Simplex::MyEntity::GetNumOfLives(void)
+{
+	return m_numOfLives;
 }
 
 vector3 Simplex::MyEntity::GetForward()

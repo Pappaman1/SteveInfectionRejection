@@ -6,7 +6,7 @@ void MySolver::Init(void)
 	m_v3Acceleration = ZERO_V3;
 	m_v3Position = ZERO_V3;
 	m_v3Velocity = ZERO_V3;
-	m_v3ProperFacing = vector3(0.0f, 0.0f, -1.0f);
+	vector3 m_v3ProperFacing = vector3(0.0f, 0.0f, 1.0f);
 	m_fMass = 1.0f;
 }
 void MySolver::Swap(MySolver& other)
@@ -74,9 +74,6 @@ vector3 CalculateMaxVelocity(vector3 a_v3Velocity, float maxVelocity)
 {
 	if (glm::length(a_v3Velocity) > maxVelocity)
 	{
-		if (a_v3Velocity == ZERO_V3) {
-			vector3(0.0000001f, 0.0000001f, 0.0000001f);
-		}
 		a_v3Velocity = glm::normalize(a_v3Velocity);
 		a_v3Velocity *= maxVelocity;
 	}
@@ -116,14 +113,8 @@ void MySolver::Update(float deltaTime)
 		m_v3Velocity.y = 0;
 	}
 
-	
-
-	//Don't want to set the ideal facing to 0.
-	if (m_v3Velocity != vector3(0.0f, 0.0f, 0.0f)) {
-		//Set properfacing to velocity and then normalize it to get a direction.
-		m_v3ProperFacing = m_v3Velocity;
-	}
-	
+	//Set properfacing to velocity and then normalize it to get a direction.
+	m_v3ProperFacing = m_v3Velocity;
 	//safety.  Don't normalize vectors of zero or stuff WILL crash.
 	if (m_v3ProperFacing != ZERO_V3) {
 		glm::normalize(m_v3ProperFacing);
@@ -137,13 +128,15 @@ void MySolver::Update(float deltaTime)
 void MySolver::ResolveCollision(MySolver* a_pOther)
 {
 	float fMagThis = glm::length(m_v3Velocity);
-	float fMagOther = glm::length(m_v3Velocity);
+	float fMagOther = glm::length(a_pOther->GetVelocity());
 
 	if (fMagThis > 0.015f || fMagOther > 0.015f)
 	{
 		//a_pOther->ApplyForce(GetVelocity());
-		ApplyForce(-m_v3Velocity * 2.0f);
-		a_pOther->ApplyForce(m_v3Velocity);
+		//ApplyForce(-m_v3Velocity * 2.0f);
+		m_v3TotalForce += -a_pOther->GetVelocity() * 2.0f;
+		a_pOther->AddInertia(m_v3Velocity);
+		//a_pOther->ApplyForce(m_v3Velocity);
 	}
 	else
 	{
@@ -151,8 +144,11 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 		if(glm::length(v3Direction) != 0)
 			v3Direction = glm::normalize(v3Direction);
 		v3Direction *= 0.04f;
-		ApplyForce(v3Direction * 2.0f);
-		a_pOther->ApplyForce(-v3Direction);
+		//ApplyForce(v3Direction * 2.0f);
+		//a_pOther->ApplyForce(-v3Direction);
+
+		m_v3TotalForce += v3Direction * 2.0f;
+		a_pOther->AddInertia(-v3Direction);
 	}
 }
 
@@ -160,14 +156,9 @@ void Simplex::MySolver::Seek(vector3 targetPos, float a_fWeight)
 {
 	// Step 1: Calculate desired velocity
 	// Vector pointing from myself to my target
-
 	vector3 v3desiredVelocity = targetPos - m_v3Position;
 
 	// Step 2: Scale desired to max speed
-	//DEBUG NOTE: desiredVelocity MAY sometimes end up as zero somehow, breaking things.  Error handling to prevent that for debugging something else
-	if (v3desiredVelocity == ZERO_V3) {
-		v3desiredVelocity = vector3(0.0000001f, 0.0000001f, 0.0000001f);
-	}
 	glm::normalize(v3desiredVelocity);
 	v3desiredVelocity *= 5.0f;
 
@@ -184,10 +175,6 @@ void Simplex::MySolver::Flee(vector3 targetPos, float a_fWeight)
 {
 	vector3 v3desiredVelocity = m_v3Position - targetPos;
 
-	//DEBUG NOTE: desiredVelocity MAY sometimes end up as zero somehow, breaking things.  Error handling to prevent that for debugging something else
-	if (v3desiredVelocity == ZERO_V3) {
-		v3desiredVelocity = vector3(0.0000001f, 0.0000001f, 0.0000001f);
-	}
 	glm::normalize(v3desiredVelocity);
 	v3desiredVelocity *= 5.0f;
 
@@ -217,10 +204,6 @@ void Simplex::MySolver::Arrival(vector3 targetPos)
 	}
 
 	// Step 2: Scale desired to max speed
-	//DEBUG NOTE: desiredVelocity MAY sometimes end up as zero somehow, breaking things.  Error handling to prevent that for debugging something else
-	if (v3desiredVelocity == ZERO_V3) {
-		v3desiredVelocity = vector3(0.0000001f, 0.0000001f, 0.0000001f);
-	}
 	glm::normalize(v3desiredVelocity);
 	v3desiredVelocity *= fMaxSpeed;
 
@@ -237,11 +220,6 @@ void Simplex::MySolver::Separate(vector3 targetPos, float a_fWeight)
 	vector3 v3desiredVelocity = GetPosition() - targetPos;
 	float mag = glm::length(v3desiredVelocity);
 
-
-	//DEBUG NOTE: desiredVelocity MAY sometimes end up as zero somehow, breaking things.  Error handling to prevent that for debugging something else
-	if (v3desiredVelocity == ZERO_V3) {
-		v3desiredVelocity = vector3(0.0000001f, 0.0000001f, 0.0000001f);
-	}
 	glm::normalize(v3desiredVelocity);
 	v3desiredVelocity *= 5.0f;
 
@@ -309,11 +287,10 @@ vector3 Simplex::MySolver::GetDirection(void)
 
 
 vector3 Simplex::MySolver::GetProperFacing(void) {
-	//even MORE security to prevent it passing a zero vector
-	if (m_v3ProperFacing == vector3(0.0f, 0.0f, 0.0f) ){
-
-		m_v3ProperFacing = vector3(0.0f, 0.0f, -1.0f);
-	}
-
 	return m_v3ProperFacing;
+}
+
+void Simplex::MySolver::AddInertia(vector3 a_v3Velocity)
+{
+	m_v3TotalForce += a_v3Velocity * 8.0f;
 }
