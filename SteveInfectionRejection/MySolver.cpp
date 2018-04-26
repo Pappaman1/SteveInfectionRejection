@@ -279,6 +279,7 @@ void Simplex::MySolver::SetDirection(vector3 a_v3Direction)
 	m_v3Direction = a_v3Direction;
 }
 
+//TODO: possibly discard.  No code references instances of getdirection or setdirection.
 vector3 Simplex::MySolver::GetDirection(void)
 {
 	return m_v3Direction;
