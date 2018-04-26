@@ -40,7 +40,7 @@ void Application::InitVariables(void)
 	// spawn projectiles to prove object is loading properly
 	for (int i = 0; i < 5; i++)
 	{
-		m_pEntityMngr->AddEntity("Minecraft\\NinjaStar.obj", "Ninjastar_");
+		m_pEntityMngr->AddEntity("Minecraft\\NinjaStar (1).obj", "Ninjastar_");
 		vector3 v3Position = vector3(glm::sphericalRand(5.0f));
 		matrix4 m4Position = glm::translate(v3Position);
 		m_pEntityMngr->SetModelMatrix(m4Position);
@@ -73,15 +73,13 @@ void Application::Update(void)
 	fTimer = m_pSystem->GetDeltaTime(uClock);		//get the delta time for that timer
 	int time = static_cast<int>(fTimer);
 
-
-	int time = static_cast<int>(fTimer);
 	//Is the ArcBall active?
 	ArcBall();
 
 	//Is the first person camera active?
 	CameraRotation();
 
-<<<<<<< HEAD
+
 
 	if ((time % 60) == 0)
 	{
@@ -89,11 +87,9 @@ void Application::Update(void)
 		m_pRoot = new MyOctant(m_uOctantLevels, 5);
 	}
 
-=======
 	if ((time % 2) == 0) {
 		m_pRoot = new MyOctant(m_uOctantLevels, 5);
 	}
->>>>>>> 3cd9c3744856d471f55685a35c130677dfdae738
 	//Update Entity Manager
 	m_pEntityMngr->Update(fTimer);
 
