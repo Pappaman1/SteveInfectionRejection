@@ -51,7 +51,7 @@ class MyEntity
 public:
 	
 	//what direction the entity is facing.  Used to rotate model to face direction it's moving in by comparing to how fast it's moving.
-	vector3 m_v3Forward;
+	vector3 m_v3Forward = vector3 (0.0f, 0.0f, 1.0f);
 
 	//gives the forward a new vector3 for its new facing direction
 	void SetForward(vector3);

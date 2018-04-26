@@ -338,10 +338,12 @@ void Simplex::MyEntity::Update(float deltaTime)
 
 		
 		//Get a normalized vector from Solver for the direction the object is currently moving.  We only need X and Z.  We don't want the models facing up or down.
-		vector3 TransmittedForward = vector3(GetProperFacing().x, 0.0f, GetProperFacing().z);
+		vector3 transmittedForward = vector3(GetProperFacing().x, 0.0f, GetProperFacing().z);
+
+		m_v3Forward = vector3(0.0f, 0.0f, -1.0f);
 
 		//Compare the current direction being traveled to the entity's current forward.  If they're different, continue.
-		if (TransmittedForward != m_v3Forward) {
+		if (transmittedForward != m_v3Forward) {
 			
 			//TODO compare TransmittedForward to m_v3Forward (the Entity's forward) to know how much to rotate the entity so it faces the right way
 
@@ -349,11 +351,15 @@ void Simplex::MyEntity::Update(float deltaTime)
 
 			//Set the entity's logged forward vector to its new one
 
+			float dog = (glm::dot(transmittedForward, m_v3Forward) / (transmittedForward.length() * m_v3Forward.length()));
 
+			vector3 rotationAmount = glm::acos(vector3(dog, dog, dog));
+			
+			matrix4 tempMatrix = glm::rotate(IDENTITY_M4, 34.0f, vector3(0.0f, 1.0f, 0.0f));
+			tempMatrix[3] = m_m4ToWorld[3];
+			SetModelMatrix(tempMatrix);
 
 			
-
-			//m_v3Forward = TransmittedForward;
 		}
 
 		//DEBUG: Making sure the chosen object for rotation won't affect movement
