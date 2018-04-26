@@ -1,4 +1,5 @@
 #include "MySolver.h"
+#include "MyEntity.h"
 using namespace Simplex;
 //  MySolver
 void MySolver::Init(void)
@@ -18,7 +19,11 @@ void MySolver::Swap(MySolver& other)
 }
 void MySolver::Release(void){/*nothing to deallocate*/ }
 //The big 3
-MySolver::MySolver(void){ Init(); }
+MySolver::MySolver(MyEntity* a_thisPoint){ 
+	Init();
+	m_ThisEntity = a_thisPoint;
+
+}
 MySolver::MySolver(MySolver const& other)
 {
 	m_v3Acceleration = other.m_v3Acceleration;
@@ -137,6 +142,7 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 		m_v3TotalForce += -a_pOther->GetVelocity() * 2.0f;
 		a_pOther->AddInertia(m_v3Velocity);
 		//a_pOther->ApplyForce(m_v3Velocity);
+		m_ThisEntity->SetEntityType(1);
 	}
 	else
 	{
@@ -150,6 +156,8 @@ void MySolver::ResolveCollision(MySolver* a_pOther)
 		m_v3TotalForce += v3Direction * 2.0f;
 		a_pOther->AddInertia(-v3Direction);
 	}
+	
+	
 }
 
 void Simplex::MySolver::Seek(vector3 targetPos, float a_fWeight)

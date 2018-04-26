@@ -38,16 +38,9 @@ void Application::InitVariables(void)
 		//m_pEntityMngr->SetMass(i+1);
 	}
 
-	// spawn projectiles to prove object is loading properly
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	m_pEntityMngr->AddEntity("Minecraft\\NinjaStar.obj", "Ninjastar_");
-	//	vector3 v3Position = vector3(glm::sphericalRand(5.0f));
-	//	v3Position.y = 0.0f;
-	//	matrix4 m4Position = glm::translate(v3Position);
-	//	m_pEntityMngr->SetModelMatrix(m4Position);
-	//	m_pEntityMngr->UsePhysicsSolver();
-	//}
+	// draw floor
+	pMesh = new MyMesh();
+	pMesh->GenerateFloor(100.0f, C_BLACK);
 
 #pragma region Audio
 	// Directory to audio
@@ -106,6 +99,11 @@ void Application::Display(void)
 
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
+
+	// draw the floor
+	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
+	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
+	pMesh->Render(m4Projection, m4View, ToMatrix4(m_qArcBall));
 
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();

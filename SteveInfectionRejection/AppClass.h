@@ -13,6 +13,8 @@ Date: 2017/06
 #include "MyEntityManager.h"
 #include "MyOctant.h"
 
+#include "MyMesh.h"
+
 namespace Simplex
 {
 //Adding Application to the Simplex namespace
@@ -65,6 +67,8 @@ private:
 	sf::SoundBuffer m_soundBuffer; //buffer to play sound from
 	sf::Sound m_sound; //sound effect
 	sf::Music m_soundBGM; //background music
+
+	MyMesh* pMesh = nullptr;
 
 	MyOctant* m_pRoot = nullptr;
 

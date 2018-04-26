@@ -382,6 +382,8 @@ public:
 	void SetNumOfLives(uint a_pNum);
 	uint GetNumOfLives(void);
 
+	void ChangeModel(std::string a_fileName);
+
 private:
 	/*
 	Usage: Deallocates member fields
