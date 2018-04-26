@@ -335,8 +335,8 @@ void Simplex::MyEntity::Update(float deltaTime)
 		
 
 
-
-		
+		//TODO: finish rotation.  Commented out because not working atm.
+		/*
 		//Get a normalized vector from Solver for the direction the object is currently moving.  We only need X and Z.  We don't want the models facing up or down.
 		vector3 transmittedForward = vector3(GetProperFacing().x, 0.0f, GetProperFacing().z);
 
@@ -355,19 +355,21 @@ void Simplex::MyEntity::Update(float deltaTime)
 
 			vector3 rotationAmount = glm::acos(vector3(dog, dog, dog));
 			
-			matrix4 tempMatrix = glm::rotate(IDENTITY_M4, 34.0f, vector3(0.0f, 1.0f, 0.0f));
+			matrix4 tempMatrix = glm::rotate(IDENTITY_M4, rotationAmount.x, vector3(0.0f, 1.0f, 0.0f));
 			tempMatrix[3] = m_m4ToWorld[3];
 			SetModelMatrix(tempMatrix);
 
 			
 		}
 
+
+
 		//DEBUG: Making sure the chosen object for rotation won't affect movement
 		//matrix4 tempMatrix = glm::rotate(IDENTITY_M4, 20.0f, vector3(0.0f, 1.0f, 0.0f));
 		//tempMatrix[3] = m_m4ToWorld[3];
 		//SetModelMatrix(tempMatrix);
 		
-
+		*/
 	}
 }
 void Simplex::MyEntity::ResolveCollision(MyEntity* a_pOther)
