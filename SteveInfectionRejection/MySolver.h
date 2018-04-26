@@ -18,9 +18,14 @@ class MySolver
 	vector3 m_v3TotalForce = ZERO_V3;
 	vector3 m_v3Direction = ZERO_V3;
 
+	vector3 m_v3ProperFacing = ZERO_V3; //sends information to MyEntity based on normalized acceleration of MySolver for use in calculating forward
+
 	float m_fMaxVelocity = 5.0f;
 	float m_fMass = 1.0f; //Mass of the solver
 public:
+
+
+
 	/*
 	USAGE: Constructor
 	ARGUMENTS: ---
@@ -170,6 +175,13 @@ public:
 	*/
 	vector3 GetDirection(void);
 
+	/*
+	USAGE: Gets the information for the Entity to calculate what direction it should face
+	ARGUMENTS: ---
+	OUTPUT: object instance
+	*/
+	vector3 GetProperFacing(void);
+
 
 
 private:
@@ -188,6 +200,9 @@ private:
 };//class
 
 } //namespace Simplex
+
+
+ 
 
 #endif //__SOLVER_H_
 

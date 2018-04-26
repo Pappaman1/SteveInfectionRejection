@@ -44,6 +44,17 @@ class MyEntity
 	MySolver* m_pSolver = nullptr; //Physics MySolver
 
 public:
+	
+	//what direction the entity is facing.  Used to rotate model to face direction it's moving in by comparing to how fast it's moving.
+	vector3 m_v3Forward;
+
+	//gives the forward a new vector3 for its new facing direction
+	void SetForward(vector3);
+
+	//returns the entity's forward vector.  Used to calculate whether current movement is in current facing direction and, if not, rotate to fit.
+	vector3 GetForward();
+	
+	
 	/*
 	Usage: Constructor that specifies the name attached to the MyEntity
 	Arguments:
@@ -329,6 +340,14 @@ public:
 	OUTPUT: ---
 	*/
 	vector3 GetDirection(void);
+
+	/*
+	USAGE: Returns the Direction the character should be facing
+	ARGUMENTS: a_fVelocity max float
+	OUTPUT: ---
+	*/
+	vector3 GetProperFacing(void);
+
 	/*
 	USAGE: Checks if two entities are close (exist in same dimension)
 	ARGUMENTS: other (pointer to another Entity)

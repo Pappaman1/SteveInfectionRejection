@@ -23,6 +23,7 @@ bool Simplex::MyEntity::IsInitialized(void){ return m_bInMemory; }
 String Simplex::MyEntity::GetUniqueID(void) { return m_sUniqueID; }
 void Simplex::MyEntity::SetAxisVisible(bool a_bSetAxis) { m_bSetAxis = a_bSetAxis; }
 void Simplex::MyEntity::SetPosition(vector3 a_v3Position) { if(m_pSolver) m_pSolver->SetPosition(a_v3Position); }
+vector3 m_v3Forward =  vector3(0.0f, 0.0f, -1.0f);
 Simplex::vector3 Simplex::MyEntity::GetPosition(void)
 {
 	if (m_pSolver != nullptr)
@@ -311,6 +312,31 @@ void Simplex::MyEntity::Update(float deltaTime)
 
 		SetModelMatrix(glm::translate(m_pSolver->GetPosition()));
 
+		
+
+
+
+		
+		//Get a normalized vector from Solver for the direction the object is currently moving.  We only need X and Z.  We don't want the models facing up or down.
+		vector3 TransmittedForward = vector3(GetProperFacing().x, 0.0f, GetProperFacing().z);
+
+		//Compare the current direction being traveled to the entity's current forward.  If they're different, continue.
+		if (TransmittedForward != m_v3Forward) {
+			
+			//TODO compare TransmittedForward to m_v3Forward (the Entity's forward) to know how much to rotate the entity so it faces the right way
+
+			//TODO Rotate the entity to be facing the right way
+
+			//Set the entity's logged forward vector to its new one
+			m_v3Forward = TransmittedForward;
+		}
+
+		//DEBUG: Making sure the chosen object for rotation won't affect movement
+		//NOTE: currently throws exception on runtime.  Need to look into why.
+		//SetModelMatrix(glm::rotate(IDENTITY_M4, 1.0f, GetProperFacing()));
+
+		
+
 	}
 }
 void Simplex::MyEntity::ResolveCollision(MyEntity* a_pOther)
@@ -371,6 +397,13 @@ vector3 Simplex::MyEntity::GetDirection(void)
 	return vector3();
 }
 
+vector3 Simplex::MyEntity::GetProperFacing(void)
+{
+	if (m_pSolver != nullptr)
+		return m_pSolver->GetProperFacing();
+	return vector3();
+}
+
 bool Simplex::MyEntity::IsClose(MyEntity * const other)
 {
 	if (!m_bInMemory || !other->m_bInMemory)
@@ -383,6 +416,10 @@ bool Simplex::MyEntity::IsClose(MyEntity * const other)
 
 	return true;
 }
+
+
+
+
 
 void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 {
@@ -453,4 +490,13 @@ void Simplex::MyEntity::ResolveBeingClose(MyEntity * a_pOther)
 		//}
 
 	}
+}
+
+vector3 Simplex::MyEntity::GetForward()
+{
+	return m_v3Forward;
+}
+
+void Simplex::MyEntity::SetForward(vector3 freshForward) {
+	m_v3Forward = freshForward;
 }
