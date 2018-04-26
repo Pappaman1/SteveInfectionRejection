@@ -10,6 +10,8 @@ Date: 2017/07
 namespace Simplex
 {
 
+	extern class MyEntity;
+
 class MySolver
 {
 	vector3 m_v3Acceleration = ZERO_V3; //Acceleration of the MySolver
@@ -22,16 +24,16 @@ class MySolver
 
 	float m_fMaxVelocity = 5.0f;
 	float m_fMass = 1.0f; //Mass of the solver
+	MyEntity* m_ThisEntity = nullptr; //creates a new entity for solving collision and turning into zombies.
+
 public:
-
-
 
 	/*
 	USAGE: Constructor
 	ARGUMENTS: ---
 	OUTPUT: object instance
 	*/
-	MySolver(void);
+	MySolver(MyEntity* a_thisPoint);
 	/*
 	USAGE: Copy Constructor
 	ARGUMENTS: object to copy

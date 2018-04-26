@@ -105,7 +105,7 @@ Simplex::MyEntity::MyEntity(String a_sFileName, String a_sUniqueID)
 		m_pRigidBody = new MyRigidBody(m_pModel->GetVertexList()); //generate a rigid body
 		m_bInMemory = true; //mark this entity as viable
 	}
-	m_pSolver = new MySolver();
+	m_pSolver = new MySolver(this);
 }
 Simplex::MyEntity::MyEntity(MyEntity const& other)
 {
@@ -556,6 +556,12 @@ void Simplex::MyEntity::SetNumOfLives(uint a_pNum)
 uint Simplex::MyEntity::GetNumOfLives(void)
 {
 	return m_numOfLives;
+}
+
+void Simplex::MyEntity::ChangeModel(std::string a_fileName)
+{
+
+
 }
 
 vector3 Simplex::MyEntity::GetForward()
