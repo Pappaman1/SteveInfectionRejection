@@ -348,14 +348,18 @@ void Simplex::MyEntity::Update(float deltaTime)
 			//TODO Rotate the entity to be facing the right way
 
 			//Set the entity's logged forward vector to its new one
-			m_v3Forward = TransmittedForward;
+
+
+
+			
+
+			//m_v3Forward = TransmittedForward;
 		}
 
 		//DEBUG: Making sure the chosen object for rotation won't affect movement
-		matrix4 tempMatrix = glm::rotate(IDENTITY_M4, 20.0f, vector3(0.0f, 1.0f, 0.0f));
-		tempMatrix[3] = m_m4ToWorld[3];
-		m_m4ToWorld = tempMatrix;
-
+		//matrix4 tempMatrix = glm::rotate(IDENTITY_M4, 20.0f, vector3(0.0f, 1.0f, 0.0f));
+		//tempMatrix[3] = m_m4ToWorld[3];
+		//SetModelMatrix(tempMatrix);
 		
 
 	}
