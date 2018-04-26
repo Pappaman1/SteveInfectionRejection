@@ -56,9 +56,12 @@ void Application::Update(void)
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
+	
 	static float fTimer = 0;
 	static uint uClock = m_pSystem->GenClock();		//generate a new clock for that timer
 	fTimer = m_pSystem->GetDeltaTime(uClock);		//get the delta time for that timer
+	int time = static_cast<int>(fTimer);
+
 
 	//Is the ArcBall active?
 	ArcBall();
@@ -66,7 +69,13 @@ void Application::Update(void)
 	//Is the first person camera active?
 	CameraRotation();
 
-	m_pRoot = new MyOctant(m_uOctantLevels, 5);
+
+	if ((time % 60) == 0)
+	{
+		SafeDelete(m_pRoot);
+		m_pRoot = new MyOctant(m_uOctantLevels, 5);
+	}
+
 	//Update Entity Manager
 	m_pEntityMngr->Update(fTimer);
 
