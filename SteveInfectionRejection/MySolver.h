@@ -19,8 +19,8 @@ class MySolver
 	vector3 m_v3Velocity = ZERO_V3; //Velocity of the MySolver
 	vector3 m_v3TotalForce = ZERO_V3;
 	vector3 m_v3Direction = ZERO_V3;
-
-	vector3 m_v3ProperFacing = ZERO_V3; //sends information to MyEntity based on normalized acceleration of MySolver for use in calculating forward
+	//Not set to Zero because it should never be zero
+	vector3 m_v3ProperFacing = vector3(0.0f, 0.0f, -1.0f); //sends information to MyEntity based on normalized acceleration of MySolver for use in calculating forward
 
 	float m_fMaxVelocity = 5.0f;
 	float m_fMass = 1.0f; //Mass of the solver
